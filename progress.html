@@ -10,12 +10,21 @@
 
 <body>
 
+<!--
+<div id="table">
+<table style="width:100%">
+  <tr>
+     <td style="height:0px">ISO</td>
+     <td style="height:0px">TOP</td>
+  </tr>
+  <tr>
+     <td style="height:600px">SIDE</td>
+     <td style="height:600px">FRONT</td>
+  </tr>
+</table>
+</div>
 
-        <div id="info">
-            <button id="solve">solve</button>
-            <button id="randomize">randomize</button>
-        </div>
-
+-->
 
     <script src="js/Tween.js"></script>
     <script src="js/three.js"></script>
@@ -52,21 +61,12 @@ init();
 
 function init()
 {
-	
-	container = document.createElement( 'div' );
-    document.body.appendChild( container );
-	
     clock = new THREE.Clock();
     
     originalAspect = window.innerWidth / window.innerHeight;
     viewSize = 6;
-    
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );
-    
-    
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize (window.innerWidth, window.innerHeight);
     document.body.appendChild (renderer.domElement);
     
     scene = new THREE.Scene();
@@ -124,8 +124,6 @@ function init()
     
     window.addEventListener ('resize', onWindowResize, false);  
     window.addEventListener( 'mousedown', onDocumentMouseDown, false );
-    document.getElementById( "solve" ).addEventListener( 'click', solveCross, false);
-    document.getElementById( "randomize" ).addEventListener( 'click', randomize, false);
     
     animate();
 }
@@ -155,47 +153,14 @@ function createCube()
         object0.lineTo( length, 0 );
         object0.lineTo( 0, 0 );
         
-        
-        var frontTexture = new THREE.TextureLoader().load( "front label.png" );
-        const frontMaterial = new THREE.MeshPhongMaterial({
-        	  map: frontTexture,
-        	  transparent: true,
-        	});
-        
-        var topTexture = new THREE.TextureLoader().load( "top label.png" );
-        const topMaterial = new THREE.MeshPhongMaterial({
-              map: topTexture,
-              transparent: true,
-            });
-        
-        var rightTexture = new THREE.TextureLoader().load( "right label.png" );
-        const rightMaterial = new THREE.MeshPhongMaterial({
-              map: rightTexture,
-              transparent: true,
-            });
-        
         const extrude0 = new THREE.ExtrudeGeometry( object0, extrudeSettings );
         var front0 = new THREE.Mesh( extrude0, materials[0] ) ;
         
-        var geometry = new THREE.BoxGeometry( 2, .75, .01)
-        var cube = new THREE.Mesh( geometry, frontMaterial );
-        cube.name = "front";
-        cube.position.set(-.3,2,.25);
-        scene.add( cube );
-
-        var geometry = new THREE.BoxGeometry( 2, .75, .01 );
-        var cube = new THREE.Mesh( geometry, rightMaterial );
-        cube.position.set(.75,2,-.75);
-        cube.rotation.set(0,Math.PI/2,0);
-        cube.name = "right";
-        scene.add( cube );
-        
-        var geometry = new THREE.BoxGeometry( 2, .75, .01 );
-        var cube = new THREE.Mesh( geometry, topMaterial );
-        cube.position.set(-.3,.75,-2.3);
-        cube.rotation.set(Math.PI/-2,0,0);
-        cube.name = "top";
-        scene.add( cube );
+        var geometry = new THREE.PlaneGeometry( 1.5,.5 );
+        var plane = new THREE.Mesh( geometry, materials[1] );
+        plane.name = "next";
+        plane.position.set(-.35,1.5,0);
+        scene.add( plane );
 
         var fullCube = new THREE.Group();
         fullCube.add( front0);
@@ -416,6 +381,12 @@ function onDocumentMouseDown( event )
         
         console.log(obj.name)
         
+        if(obj.name == "next")
+            {
+               fillCubeColors();
+            }
+        else{
+        
         var foundMatch = false;
         var counter = 0;
         while(counter < materials.length && foundMatch == false)
@@ -433,7 +404,10 @@ function onDocumentMouseDown( event )
                counter++;
             }
 
+        }
     }
+    
+    console.log(mouse.x + ": " + mouse.y);
     
 } 
 function fillCubeColors()
@@ -490,6 +464,7 @@ LEFT        FRONT      RIGHT
                 fullCube.children[i].material = oppositeColor(fullCube.children[i - 20].material.color);
                 }
     }
+    solveCross();
     
 }
 function oppositeColor(color)
@@ -516,29 +491,9 @@ function oppositeColor(color)
 
     return result;
 }
-function randomize()
-{
-	//front right and top positions
-	var positionArray = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,45,46,47,48,49,50,51,52,53];
-
-	
-	for(var i = 0;i< 6;i++)
-		{
-		 var x = 0;
-		  while(x < 3)
-			  {
-			  var index = Math.floor(Math.random() * positionArray.length);
-	             fullCube.children[positionArray[index]].material = materials[i];
-	             positionArray.splice(index,1);
-			     x++;
-			  }
-		}
-	      fillCubeColors();
-}
 function solveCross()
 {
-	fillCubeColors();
-	
+
 }
 function right(){
     
@@ -638,7 +593,7 @@ function render()
     renderer.render (scene,cameras[2]);
     
     left = 0.5*SCREEN_W+1; bottom = 1; width = 0.5*SCREEN_W-2; height = 0.5*SCREEN_H-2;
-    renderer.setViewport(left,bottom,width,height);
+    renderer.setViewport (left,bottom,width,height);
     renderer.setScissor(left,bottom,width,height);
     renderer.setScissorTest( true );
     cameras[3].aspect = width/height;
