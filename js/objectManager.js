@@ -1,3 +1,5 @@
+import Cube from './CubePiece.js'; 
+
 
 const materials = [
     new THREE.MeshPhongMaterial({color: 'white'})
@@ -12,18 +14,16 @@ var cube, rotationObj, rotationAxis, rotationAxisChar;
 var rotationSpeed = 0.1;
 var prevDrag = new THREE.Vector2();
 var moveHorizontal = false, moveVertical = false;
+var CubeObj;
 
 export function createCube(scene)
 {
-    const geometry = new THREE.BoxGeometry(12, 12, 12); // width, height, depth
-    const material = new THREE.MeshLambertMaterial({ color: 0xfb8e00 });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(0, 0, 0); 
-    scene.add(mesh);
+    var position = new THREE.Vector3();
+    position.x = 0;
+    position.y = 0;
+    position.z = 0;
 
-    cube = mesh;
-
-    cube.userData = {TAG: "Front"};
+    CubeObj = new Cube(scene, position, "Front");
 
 
 }

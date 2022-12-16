@@ -6,12 +6,11 @@ export function createScene()
      
 }
 
-export function createLighting(target)
+export function createLighting()
 {
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.2 );
     directionalLight.position.x = 2;
     directionalLight.position.z = 2;
-    //directionalLight.target = fullCube;
     scene.add( directionalLight );
     const ambientLight = new THREE.AmbientLight (0x11111, 10);
     scene.add(ambientLight);   

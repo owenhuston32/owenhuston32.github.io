@@ -1,4 +1,3 @@
-// global var's
 import * as screenManager from './screenManager.js';
 import * as cameraManager from './cameraManager.js';
 import * as sceneManager from './sceneManager.js';
@@ -16,7 +15,7 @@ function init()
     
     screenManager.setupScreen(document);
 
-    cameraManager.createCameras(screenManager.getCanvas());
+    cameraManager.createCameras(screenManager.getCanvasArray());
 
     startInputListener();
 
@@ -24,22 +23,29 @@ function init()
 
     objectManager.createCube(sceneManager.getScene());
 
-    sceneManager.createLighting(objectManager.getCube());
+    sceneManager.createLighting();
 
     animate();
+
+
+
+    window.onresize = function() {
+        onWindowResize();
+    };
+    
 }
 
 function animate()
 {
     requestAnimationFrame ( animate );  
-    cameraManager.render(screenManager.getCanvas(), screenManager.getRenderer(), sceneManager.getScene());
+    cameraManager.render(sceneManager.getScene(), screenManager.getRenderers());
 }
 
 function startInputListener()
 {
-    document.onmousedown = function(event){onMouseDown(event, screenManager.getCanvas())};
+    document.onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
 
-    document.onmousemove = function(event){onMouseMove(event, screenManager.getCanvas())};
+    document.onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
     document.onmouseup = function(){onMouseUp()};
 
@@ -73,4 +79,10 @@ function onMouseUp()
     objectManager.stopRotating();
     pressedObject = null;
     inputManager.onMouseUp();
+}
+
+function onWindowResize()
+{
+    screenManager.onWindowResize();
+    cameraManager.onWindowResize(screenManager.getCanvasArray());
 }

@@ -1,13 +1,9 @@
 var cameras = [];
-
-export function createCameras(canvas)
+export function createCameras(canvasArray)
 {
-    // look up the size the canvas is being displayed
-    var SCREEN_W = canvas.clientWidth, SCREEN_H = canvas.clientHeight;
-
-
     for(var i=0;i<4;i++)
     {
+        var SCREEN_W = canvasArray[i].clientWidth, SCREEN_H = canvasArray[i].clientHeight;
         var subCamera = new THREE.OrthographicCamera (SCREEN_W / -4, SCREEN_W / 4, SCREEN_H / 4, SCREEN_H / -4, 0, 1000);
         if(i==0)
         {
@@ -46,28 +42,17 @@ export function createCameras(canvas)
                }
 
             subCamera.name  = "camera: " + i;
-           cameras.push(subCamera);
+            cameras.push(subCamera);
         }
 }
 
-export function render(canvas, renderer, scene)
+
+export function render(scene, renderers)
 {   
-    var SCREEN_W = canvas.clientWidth, SCREEN_H = canvas.clientHeight;
-
-    var left,bottom, width, height;
-
-    left = 1; bottom = 0.5*SCREEN_H; width = 0.5*SCREEN_W-1; height = 0.5*SCREEN_H;
-
-    setupCamera(left, bottom, width, height, renderer, cameras[0], scene);
-
-    left = 0.5*SCREEN_W+1; bottom = 0.5*SCREEN_H; width = 0.5*SCREEN_W-1; height = 0.5*SCREEN_H;
-    setupCamera(left, bottom, width, height, renderer, cameras[1], scene);
-   
-    left = 1; bottom = 1; width = 0.5*SCREEN_W-1; height = 0.5*SCREEN_H-2;
-    setupCamera(left, bottom, width, height, renderer, cameras[2], scene);
-    
-    left = 0.5*SCREEN_W+1; bottom = 1; width = 0.5*SCREEN_W-1; height = 0.5*SCREEN_H-2;
-    setupCamera(left, bottom, width, height, renderer, cameras[3], scene);
+    for(var i = 0; i < renderers.length; i++)
+    {
+        renderers[i].render (scene, cameras[i]);
+    }
     
 }
 
@@ -76,12 +61,16 @@ export function getCamera(index)
     return cameras[index];
 }
 
-
-function setupCamera(left, bottom, width, height, renderer, camera, scene)
+export function onWindowResize(canvasArray)
 {
-    renderer.setViewport (left,bottom,width,height);
-    renderer.setScissor(left,bottom,width,height);
-    renderer.setScissorTest( true );
-    camera.updateProjectionMatrix();
-    renderer.render (scene,camera);
+    
+    for(var i = 0; i < cameras.length; i++)
+    {
+        var width = canvasArray[i].clientWidth;
+        var height = canvasArray[i].clientHeight;
+
+        cameras[i].aspect = width / height;
+        cameras[i].updateProjectionMatrix();
+    }
+    
 }
