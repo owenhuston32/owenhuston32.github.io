@@ -1,20 +1,30 @@
 import * as cube from './cube.js';
+import * as pivotManager from './pivotManager.js';
 import * as rotationManager from './rotationManager.js';
 
+var cubeObj;
 export function createCube(scene)
 {
-    cube.createCube(scene);
+    cubeObj = cube.createCube(scene);
+    var rightPivot = pivotManager.createRightPivot(cubeObj);
+    
+    console.log(cubeObj);
+
+    scene.add(rightPivot);
+    
+    rotationManager.initializePivots(rightPivot);
+
+
 }
 
 export function getCube()
 {
-    return cube;
+    return cubeObj;
 }
 
-
-export function rotateObject(obj, draggedVector)
+export function rotateObject(obj, draggedVector, rightPivot)
 {
-    rotationManager.rotateObject(obj, draggedVector);
+    rotationManager.rotateObject(obj, draggedVector, rightPivot);
 }
 
 export function stopRotating()

@@ -2,6 +2,13 @@ var rotationObj, rotationAxis, rotationAxisChar;
 var rotationSpeed = 0.1;
 var prevDrag = new THREE.Vector2();
 var moveHorizontal = false, moveVertical = false;
+var rightPivot;
+
+
+export function initializePivots(newRightPivot)
+{
+    rightPivot = newRightPivot;
+}
 
 export function rotateObject(obj, draggedVector)
 {
@@ -15,7 +22,7 @@ export function rotateObject(obj, draggedVector)
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
-            rotationObj = obj.parent;
+            rotationObj = rightPivot;
             moveVertical = true;
         }
     }
@@ -61,10 +68,10 @@ export function stopRotating()
 
 function rotateVertical(obj, draggedVector)
 {
-    if(obj.name === "FrontParent")
-    {
+    //if(obj.name === "FrontParent")
+    //{
         rotateFrontVertical(obj, draggedVector);
-    }
+    //}
 
 }
 function rotateHorizonal(obj, draggedVector)
