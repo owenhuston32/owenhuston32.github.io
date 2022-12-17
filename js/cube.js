@@ -1,29 +1,28 @@
-export default class CubePiece{
-
-
-    
-    constructor(scene)
-    {
-        const materials = [
-            new THREE.MeshPhongMaterial({color: 'white'})
+var cube = new THREE.Object3D();
+export function createCube(scene)
+{
+    const materials = [
+        new THREE.MeshPhongMaterial({color: 'white'})
         ,new THREE.MeshPhongMaterial({color: 'yellow'})
         ,new THREE.MeshPhongMaterial({color: 'green'})
         ,new THREE.MeshPhongMaterial({color: 'blue'})
         ,new THREE.MeshPhongMaterial({color: 'red'})
         ,new THREE.MeshPhongMaterial({color: 0xFF8C00})
-        ];
+    ];
 
 
-        this.createFront(materials[0], scene);
-        this.createLeft(materials[1], scene);
-        this.createRight(materials[2], scene);
-        this.createBack(materials[3], scene);
-        this.createTop(materials[4], scene);
-        this.createBottom(materials[5], scene);
-    }
+    createFront(materials[0], scene);
+    createLeft(materials[1], scene);
+    createRight(materials[2], scene);
+    createBack(materials[3], scene);
+    createTop(materials[4], scene);
+    createBottom(materials[5], scene);
 
-    createFront(material, scene)
-    {
+    scene.add(cube);
+}
+
+function createFront(material, scene)
+{
         var front = new THREE.Object3D();
 
         //front
@@ -37,17 +36,17 @@ export default class CubePiece{
             {
                 var mesh = new THREE.Mesh(box, material);
                 mesh.position.set(initialX + j * 6, i * 6, 0);
-                mesh.name = "Front";
+                mesh.name = j + "," + i;
                 front.add(mesh);
             }
         }
-        front.name = "Front";
-        scene.add(front);
+        front.name = "FrontParent";
+        cube.add(front);
 
 
     }
 
-    createLeft(material, scene)
+    function createLeft(material, scene)
     {
         var left = new THREE.Object3D();
         const box = new THREE.BoxGeometry(1, 5, 5); // width, height, depth
@@ -61,15 +60,15 @@ export default class CubePiece{
             {
                 var mesh = new THREE.Mesh(box, material);
                 mesh.position.set(0, initialY + i * 6, initialZ + j * 6);
-                mesh.name = "Left";
+                mesh.name = i + "," + j;
                 left.add(mesh);
             }
         }
-        left.name = "Left";
-        scene.add(left);
+        left.name = "LeftParent";
+        cube.add(left);
     }
 
-    createRight(material, scene)
+    function createRight(material, scene)
     {
         var right = new THREE.Object3D();
         const box = new THREE.BoxGeometry(1, 5, 5); // width, height, depth
@@ -83,14 +82,14 @@ export default class CubePiece{
             {
                 var mesh = new THREE.Mesh(box, material);
                 mesh.position.set(18, initialY + i * 6, initialZ + j * 6);
-                mesh.name = "Right";
+                mesh.name = i + "," + j;
                 right.add(mesh);
             }
         }
-        right.name = "Right";
-        scene.add(right);
+        right.name = "RightParent";
+        cube.add(right);
     }
-    createBack(material, scene)
+    function createBack(material, scene)
     {
         var back = new THREE.Object3D();
 
@@ -104,15 +103,15 @@ export default class CubePiece{
             {
                 var mesh = new THREE.Mesh(box, material);
                 mesh.position.set(initialX + j * 6, i * 6, 18);
-                mesh.name = "Back";
+                mesh.name = j + "," + i;
                 back.add(mesh);
             }
         }
-        back.name = "Back";
-        scene.add(back);
+        back.name = "BackParent";
+        cube.add(back);
 
     }
-    createTop(material, scene)
+    function createTop(material, scene)
     {
         var top = new THREE.Object3D();
         const box = new THREE.BoxGeometry(5, 1, 5); // width, height, depth
@@ -126,14 +125,14 @@ export default class CubePiece{
             {
                 var mesh = new THREE.Mesh(box, material);
                 mesh.position.set(initialX + j * 6, 15, initialZ + i*6);
-                mesh.name = "Top";
+                mesh.name = i + "," + j;
                 top.add(mesh);
             }
         }
-        top.name = "Top";
-        scene.add(top);
+        top.name = "TopParent";
+        cube.add(top);
     }
-    createBottom(material, scene)
+    function createBottom(material, scene)
     {
         var bottom = new THREE.Object3D();
         const box = new THREE.BoxGeometry(5, 1, 5); // width, height, depth
@@ -147,11 +146,10 @@ export default class CubePiece{
             {
                 var mesh = new THREE.Mesh(box, material);
                 mesh.position.set(initialX + j * 6, -3, initialZ + i*6);
-                mesh.name = "Bottom";
+                mesh.name = j + "," + i;
                 bottom.add(mesh);
             }
         }
-        bottom.name = "Bottom";
-        scene.add(bottom);
+        bottom.name = "BottomParent";
+        cube.add(bottom);
     }
-}

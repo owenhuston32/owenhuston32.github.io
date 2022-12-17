@@ -11,8 +11,10 @@ export function createCameras(canvasArray)
             //top
                subCamera.position.y = 20;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
-
-               }
+               subCamera.rotation.z = THREE.Math.degToRad(180);   
+               subCamera.position.z = 15;
+               subCamera.position.x = 10;
+            }
            else if(i==1)
                {
                //isometric
@@ -26,16 +28,16 @@ export function createCameras(canvasArray)
            else if(i==2)
                {
                //front
-               subCamera.position.z = 7;
+               subCamera.position.z = -20;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
-               
+               subCamera.position.x = 10;
                }
            else
                {
                //right
-              subCamera.position.x = -10;
+              subCamera.position.x = -5;
               subCamera.lookAt (new THREE.Vector3(0,0,0));
-
+              subCamera.position.z = 10;
                }
 
             subCamera.name  = "camera: " + i;
