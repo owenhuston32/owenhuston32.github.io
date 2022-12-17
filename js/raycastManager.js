@@ -15,5 +15,7 @@ export function raycast(mouse, camera, scene)
         pressedObject = intersection.object;
     }
 
+    console.log(pressedObject);
+
     return pressedObject;
 }

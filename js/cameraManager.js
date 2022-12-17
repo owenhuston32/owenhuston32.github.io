@@ -3,41 +3,38 @@ export function createCameras(canvasArray)
 {
     for(var i=0;i<4;i++)
     {
+        var fustrum = .25;
         var SCREEN_W = canvasArray[i].clientWidth, SCREEN_H = canvasArray[i].clientHeight;
-        var subCamera = new THREE.OrthographicCamera (SCREEN_W / -4, SCREEN_W / 4, SCREEN_H / 4, SCREEN_H / -4, 0, 1000);
+        var subCamera = new THREE.OrthographicCamera (SCREEN_W * fustrum / -2, SCREEN_W * fustrum / 2, SCREEN_H * fustrum / 2, SCREEN_H * fustrum / -2, 0, 1000);
         if(i==0)
         {
             //top
-               subCamera.position.y = 7;
+               subCamera.position.y = 20;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
-               subCamera.position.z = -.75;
-               subCamera.position.x = -.5;
 
                }
            else if(i==1)
                {
                //isometric
-                subCamera.position.x = 14;
-                subCamera.position.z = 15;
-                subCamera.position.y = -6;
+                subCamera.position.x = -15;
+                subCamera.position.z = -15;
+                subCamera.position.y = 10;
                 subCamera.lookAt (new THREE.Vector3(0,0,0));
+                subCamera.position.y = 27;
 
                }
            else if(i==2)
                {
-               //side
+               //front
                subCamera.position.z = 7;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
-               subCamera.position.x = -.5
                
                }
            else
                {
-               //front
-              subCamera.position.x = 6;
+               //right
+              subCamera.position.x = -10;
               subCamera.lookAt (new THREE.Vector3(0,0,0));
-              subCamera.position.y = 0;
-              subCamera.position.z = -.5;
 
                }
 
@@ -69,7 +66,12 @@ export function onWindowResize(canvasArray)
         var width = canvasArray[i].clientWidth;
         var height = canvasArray[i].clientHeight;
 
-        cameras[i].aspect = width / height;
+        var fustrum = .25;
+        cameras[i].left = width * fustrum / - 2;
+        cameras[i].right = width * fustrum / 2;
+        cameras[i].top = height * fustrum / 2;
+        cameras[i].bottom = height * fustrum / -2;
+
         cameras[i].updateProjectionMatrix();
     }
     

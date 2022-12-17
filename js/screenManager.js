@@ -29,8 +29,6 @@ var renderers = [];
         document.body.appendChild (fullScreen);
 
         fullScreenCanvas = fullScreen;
-        
-        onWindowResize();
     }
     
     export function getRenderers()

@@ -17,8 +17,6 @@ function init()
 
     cameraManager.createCameras(screenManager.getCanvasArray());
 
-    startInputListener();
-
     sceneManager.createScene();
 
     objectManager.createCube(sceneManager.getScene());
@@ -28,10 +26,13 @@ function init()
     animate();
 
 
+    startInputListener();
 
     window.onresize = function() {
         onWindowResize();
     };
+
+    onWindowResize();
     
 }
 
@@ -43,7 +44,13 @@ function animate()
 
 function startInputListener()
 {
-    document.onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
+    document.getElementById("cameraContainer0").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 0)};
+
+    document.getElementById("cameraContainer1").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 1)};
+
+    document.getElementById("cameraContainer2").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 2)};
+
+    document.getElementById("cameraContainer3").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 3)};
 
     document.onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
@@ -51,22 +58,19 @@ function startInputListener()
 
 }
 
-function onMouseDown(event, canvas)
+function onMouseDown(event, fullScreenCanvas, cameraIndex)
 {
-    mouse = inputManager.onMouseDown(event, canvas);
-
-    cameraIndex = inputManager.getCornerClicked(mouse);
+    mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
     mouse = inputManager.screenToCameraSpace(mouse, cameraIndex);
-
-    pressedObject = raycaster.raycast(mouse, cameraManager.getCamera(cameraIndex), sceneManager.getScene())
+    
+    pressedObject = raycaster.raycast(mouse, cameraManager.getCamera(cameraIndex), sceneManager.getScene());
 
 }
 
-function onMouseMove(event, canvas)
+function onMouseMove(event, fullScreenCanvas)
 {
-    var draggedVector = inputManager.onMouseMove(event, canvas);
-
+    var draggedVector = inputManager.onMouseMove(event, fullScreenCanvas);
 
     if(pressedObject)
     {

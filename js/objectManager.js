@@ -1,15 +1,5 @@
 import Cube from './CubePiece.js'; 
 
-
-const materials = [
-    new THREE.MeshPhongMaterial({color: 'white'})
-,new THREE.MeshPhongMaterial({color: 'yellow'})
-,new THREE.MeshPhongMaterial({color: 'green'})
-,new THREE.MeshPhongMaterial({color: 'blue'})
-,new THREE.MeshPhongMaterial({color: 'red'})
-,new THREE.MeshPhongMaterial({color: 0xFF8C00})
-]
-
 var cube, rotationObj, rotationAxis, rotationAxisChar;
 var rotationSpeed = 0.1;
 var prevDrag = new THREE.Vector2();
@@ -18,14 +8,7 @@ var CubeObj;
 
 export function createCube(scene)
 {
-    var position = new THREE.Vector3();
-    position.x = 0;
-    position.y = 0;
-    position.z = 0;
-
-    CubeObj = new Cube(scene, position, "Front");
-
-
+    CubeObj = new Cube(scene);
 }
 
 export function getCube()
@@ -93,7 +76,7 @@ export function stopRotating()
 
 function rotateVertical(obj, draggedVector)
 {
-    if(obj.userData.TAG === "Front")
+    if(obj.name === "Front")
     {
         rotateFrontVertical(obj, draggedVector);
     }
@@ -101,7 +84,7 @@ function rotateVertical(obj, draggedVector)
 }
 function rotateHorizonal(obj, draggedVector)
 {
-    if(obj.userData.TAG === "Front")
+    if(obj.name === "Front")
     {
         rotateFrontHorizontal(obj, draggedVector);
     }

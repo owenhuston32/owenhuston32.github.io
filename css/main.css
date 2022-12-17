@@ -15,32 +15,25 @@ canvas {
 {
   width: 100%;
   height: 100%;
-  resize: both;
-  overflow: auto;
 }
 
 #cameraContainer0 {
   float: left; 
   width: 50%;
   height: 50%;
-  resize: both;
-  overflow: auto;
 }
 #cameraContainer1 {
   float: left; 
   width: 50%;
   height: 50%;
-  overflow: auto;
 }
 #cameraContainer2 {
   float: left; 
   width: 50%;
   height: 50%;
-  overflow: auto;
 }
 #cameraContainer3 {
   float: left; 
   width: 50%;
   height: 50%;
-  overflow: auto;
 }
