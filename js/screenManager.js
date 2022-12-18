@@ -4,6 +4,10 @@ var renderers = [];
 
     export function setupScreen(document)
     {
+        var overlay = document.createElement('div');
+        overlay.setAttribute("id", "overlay");
+        document.body.appendChild(overlay);
+
         var fullScreen = document.createElement('div');
         fullScreen.setAttribute("id", "fullScreen");
 

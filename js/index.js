@@ -44,23 +44,27 @@ function animate()
 
 function startInputListener()
 {
-    document.getElementById("cameraContainer0").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 0)};
 
-    document.getElementById("cameraContainer1").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 1)};
+    document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
 
-    document.getElementById("cameraContainer2").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 2)};
 
-    document.getElementById("cameraContainer3").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), 3)};
-
-    document.onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
+    document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
     document.onmouseup = function(){onMouseUp()};
 
 }
 
-function onMouseDown(event, fullScreenCanvas, cameraIndex)
+function onMouseDown(event, fullScreenCanvas)
 {
+
+
     mouse = inputManager.onMouseDown(event, fullScreenCanvas);
+
+    var cameraIndex = cameraManager.getCameraIndexFromMouse(mouse);
+
+    console.log(mouse.x + ":" + mouse.y);
+
+    console.log(cameraIndex);
 
     mouse = inputManager.screenToCameraSpace(mouse, cameraIndex);
     

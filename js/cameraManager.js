@@ -55,6 +55,33 @@ export function render(scene, renderers)
     
 }
 
+export function getCameraIndexFromMouse(mouse)
+{
+    if(mouse.x < 0)
+    {
+        if(mouse.y < 0 )
+        {
+            return 2;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {   
+        if(mouse.y < 0 )
+        {
+            return 3;
+        }
+        else
+        {
+            return 1;
+        }
+
+    }
+}
+
 export function getCamera(index)
 {
     return cameras[index];

@@ -16,8 +16,36 @@ export function screenToCameraSpace(mouse, cameraIndex)
 
 //NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 
-    newMouse.x = ((mouse.x + 1) * (2)) - 1;
-    newMouse.y = ((mouse.y) * (2)) - 1;
+    const newMax = 1, newMin = -1;
+    var oldMax, oldMin;
+
+    // left side of the screen
+    if(cameraIndex == 0 || cameraIndex == 2)
+    {
+        oldMax = 0;
+        oldMin = -1;
+    }
+    else
+    {
+        oldMax = 1;
+        oldMin = 0;
+    }
+
+    newMouse.x = (((mouse.x - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+
+    // top side of the screen
+    if(cameraIndex == 0 || cameraIndex == 1)
+    {
+        oldMax = 1;
+        oldMin = 0;
+    }
+    else
+    {
+        oldMax = 0;
+        oldMin = -1;
+    }
+
+    newMouse.y = (((mouse.y - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
 
     return newMouse;
 

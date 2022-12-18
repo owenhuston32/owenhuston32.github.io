@@ -1,5 +1,5 @@
 var rotationObj, rotationAxis, rotationAxisChar;
-var rotationSpeed = 0.1;
+var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
 var moveHorizontal = false, moveVertical = false;
 var rightPivot;
@@ -86,14 +86,12 @@ function rotateFrontVertical(obj, draggedVector)
 {
     rotationAxis = obj.rotation.x;
     rotationAxisChar = 'x';
-    if(draggedVector.y - prevDrag.y > 0)
-    {
-        obj.rotation.x -= rotationSpeed;
-    }
-    else
-    {
-        obj.rotation.x += rotationSpeed;
-    }
+
+    var distance = draggedVector.y - prevDrag.y;
+    console.log("drag: " + draggedVector.y 
+    + "prev" + prevDrag.y);
+
+    obj.rotation.x += distance * rotationSpeed;
 }
 
 function rotateFrontHorizontal(obj, draggedVector)
