@@ -18,7 +18,7 @@ export function createCube(scene)
     var right = createSide(materials[1], new THREE.Vector3(0, THREE.MathUtils.degToRad(90), 0), new THREE.Vector3(-9, 0, 9), "RightParent");
     cube.add(right);
     
-    var back = createSide(materials[2], new THREE.Vector3(0, THREE.MathUtils.degToRad(180), 0), new THREE.Vector3(0, 0, 18),  "BackParent");
+    var back = createSide(materials[2], new THREE.Vector3(0, THREE.MathUtils.degToRad(180), THREE.MathUtils.degToRad(180)), new THREE.Vector3(0, 0, 18),  "BackParent");
     cube.add(back);
 
     var left = createSide(materials[3], new THREE.Vector3(0, THREE.MathUtils.degToRad(270), 0), new THREE.Vector3(9, 0, 9),"LeftParent");
@@ -50,7 +50,7 @@ function createSide(material, rotation, position, name)
             var mesh = new THREE.Mesh(box, material);
             mesh.position.set(initialX - j * 6, initialY + i * 6, 0);
             mesh.name = i + "," + j;
-            mesh.userData = {ROW: i, Col: j};
+            mesh.userData = {ROW: i, COL: j};
             side.add(mesh);
         }
     }

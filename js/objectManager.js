@@ -7,11 +7,7 @@ export function createCube(scene)
 {
     cubeObj = cube.createCube(scene);
 
-    pivotManager.initPivots(scene);
-
-    var rightPivot = pivotManager.getRightPivot();
-    
-    rotationManager.initializePivots(rightPivot);
+    pivotManager.createPivots(scene);
 
 }
 
