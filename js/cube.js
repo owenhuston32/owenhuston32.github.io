@@ -1,172 +1,62 @@
 var cube = new THREE.Object3D();
 
+const materials = [
+    new THREE.MeshPhongMaterial({color: 'white'})
+    ,new THREE.MeshPhongMaterial({color: 'yellow'})
+    ,new THREE.MeshPhongMaterial({color: 'green'})
+    ,new THREE.MeshPhongMaterial({color: 'blue'})
+    ,new THREE.MeshPhongMaterial({color: 'red'})
+    ,new THREE.MeshPhongMaterial({color: 0xFF8C00})
+        ,new THREE.MeshPhongMaterial({color: 'deeppink'})
+];
+
 export function createCube(scene)
 {
-    const materials = [
-        new THREE.MeshPhongMaterial({color: 'white'})
-        ,new THREE.MeshPhongMaterial({color: 'green'})
-        ,new THREE.MeshPhongMaterial({color: 'yellow'})
-        ,new THREE.MeshPhongMaterial({color: 'blue'})
-        ,new THREE.MeshPhongMaterial({color: 'red'})
-        ,new THREE.MeshPhongMaterial({color: 0xFF8C00})
-    ];
+    var front = createSide(materials[0], new THREE.Vector3(), new THREE.Vector3(), "FrontParent");
+    cube.add(front);
+    
+    var right = createSide(materials[1], new THREE.Vector3(0, THREE.MathUtils.degToRad(90), 0), new THREE.Vector3(-9, 0, 9), "RightParent");
+    cube.add(right);
+    
+    var back = createSide(materials[2], new THREE.Vector3(0, THREE.MathUtils.degToRad(180), 0), new THREE.Vector3(0, 0, 18),  "BackParent");
+    cube.add(back);
 
+    var left = createSide(materials[3], new THREE.Vector3(0, THREE.MathUtils.degToRad(270), 0), new THREE.Vector3(9, 0, 9),"LeftParent");
+    cube.add(left);
 
-    createFront(materials[0]);
-    createLeft(materials[1]);
-    createRight(materials[2]);
-    createBack(materials[3]);
-    createTop(materials[4]);
-    createBottom(materials[5]);
+    var top = createSide(materials[4], new THREE.Vector3(THREE.MathUtils.degToRad(90), 0, 0), new THREE.Vector3(0, 9, 9), "TopParent");
+    cube.add(top);
+
+    var bottom = createSide(materials[5], new THREE.Vector3(THREE.MathUtils.degToRad(-90), 0, 0), new THREE.Vector3(0, -9, 9), "BottomParent");
+    cube.add(bottom);
 
     scene.add(cube);
 
     return cube;
 }
 
-function createFront(material)
+
+function createSide(material, rotation, position, name)
 {
-        var front = new THREE.Object3D();
+    var side = new THREE.Object3D();
+    const box = new THREE.BoxGeometry(5, 5, 1); // width, height, depth
+    var initialY = -6;
+    var initialX = 6;
 
-        //front
-        const box = new THREE.BoxGeometry(5, 5, 1); // width, height, depth
-
-        var initialX = 3;
-
-        for(var i = 0; i < 3; i++)
-        {
-            for(var j = 2; j >= 0; j--)
-            {
-                var mesh = new THREE.Mesh(box, material);
-                mesh.position.set(initialX + j * 6, i * 6, 0);
-                
-                const colNum = 2-j;
-                mesh.name = i + "," + colNum;
-                mesh.userData = {ROW: i, Col: colNum};
-                front.add(mesh);
-            }
-        }
-        front.name = "FrontParent";
-        cube.add(front);
-
-
-    }
-
-    function createLeft(material)
+    for(var i = 0; i < 3; i++)
     {
-        var right = new THREE.Object3D();
-        const box = new THREE.BoxGeometry(1, 5, 5); // width, height, depth
-
-        var initialY = 0;
-        var initialZ = 3;
-
-        for(var i = 0; i < 3; i++)
+        for(var j = 0; j < 3; j++)
         {
-            for(var j = 0; j < 3; j++)
-            {
-                var mesh = new THREE.Mesh(box, material);
-                mesh.position.set(18, initialY + i * 6, initialZ + j * 6);
-                const colNum = 2-j;
-                mesh.name = i + "," + colNum;
-                mesh.userData = {ROW: i, Col: colNum};
-                right.add(mesh);
-            }
+            var mesh = new THREE.Mesh(box, material);
+            mesh.position.set(initialX - j * 6, initialY + i * 6, 0);
+            mesh.name = i + "," + j;
+            mesh.userData = {ROW: i, Col: j};
+            side.add(mesh);
         }
-        right.name = "LeftParent";
-        cube.add(right);
-
     }
+    side.rotation.set(rotation.x, rotation.y, rotation.z);
+    side.position.set(position.x, position.y, position.z);
+    side.name = name;
 
-    function createRight(material)
-    {
-        var left = new THREE.Object3D();
-        const box = new THREE.BoxGeometry(1, 5, 5); // width, height, depth
-
-        var initialY = -6;
-        var initialZ = -6;
-
-        for(var i = 0; i < 3; i++)
-        {
-            for(var j = 0; j < 3; j++)
-            {
-                var mesh = new THREE.Mesh(box, material);
-                mesh.position.set(0, initialY + i * 6, initialZ + j * 6);
-                mesh.name = i + "," + j;
-                mesh.userData = {ROW: i, Col: j};
-                left.add(mesh);
-            }
-        }
-        left.name = "RightParent";
-        cube.add(left);
-
-    }
-    function createBack(material)
-    {
-        var back = new THREE.Object3D();
-
-        const box = new THREE.BoxGeometry(5, 5, 1); // width, height, depth
-
-        var initialY = 12;
-        var initialX = 3;
-
-        for(var i = 0; i < 3; i++)
-        {
-            for(var j = 0; j < 3; j++)
-            {
-                var mesh = new THREE.Mesh(box, material);
-                mesh.position.set(initialX + j * 6, initialY - i * 6, 18);
-                mesh.name = i + "," + j;
-                mesh.userData = {ROW: i, Col: j};
-                back.add(mesh);
-            }
-        }
-        back.name = "BackParent";
-        cube.add(back);
-
-    }
-    function createTop(material)
-    {
-        var top = new THREE.Object3D();
-        const box = new THREE.BoxGeometry(5, 1, 5); // width, height, depth
-
-        var initialX = 3;
-        var initialZ = 3;
-
-        for(var i = 0; i < 3; i++)
-        {
-            for(var j = 0; j < 3; j++)
-            {
-                var mesh = new THREE.Mesh(box, material);
-                mesh.position.set(initialX + j * 6, 15, initialZ + i*6);
-                const colNum = (2 - j);
-                mesh.name = i + "," + colNum;
-                mesh.userData = {ROW: i, Col: colNum};
-                top.add(mesh);
-            }
-        }
-        top.name = "TopParent";
-        cube.add(top);
-    }
-    function createBottom(material)
-    {
-        var bottom = new THREE.Object3D();
-        const box = new THREE.BoxGeometry(5, 1, 5); // width, height, depth
-
-        var initialX = 3;
-        var initialZ = 3;
-
-        for(var i = 0; i < 3; i++)
-        {
-            for(var j = 0; j < 3; j++)
-            {
-                var mesh = new THREE.Mesh(box, material);
-                mesh.position.set(initialX + j * 6, -3, initialZ + i*6);
-                const colNum = (2 - j);
-                mesh.name = i + "," + colNum;
-                mesh.userData = {ROW: i, Col: colNum};
-                bottom.add(mesh);
-            }
-        }
-        bottom.name = "BottomParent";
-        cube.add(bottom);
-    }
+    return side;
+}

@@ -88,8 +88,6 @@ function rotateFrontVertical(obj, draggedVector)
     rotationAxisChar = 'x';
 
     var distance = draggedVector.y - prevDrag.y;
-    console.log("drag: " + draggedVector.y 
-    + "prev" + prevDrag.y);
 
     obj.rotation.x += distance * rotationSpeed;
 }
@@ -98,12 +96,8 @@ function rotateFrontHorizontal(obj, draggedVector)
 {
     rotationAxis = obj.rotation.z;
     rotationAxisChar = 'z';
-    if(draggedVector.x - prevDrag.x > 0)
-    {
-        obj.rotation.z -= rotationSpeed;
-    }
-    else
-    {
-        obj.rotation.z += rotationSpeed;
-    }
+
+    var distance = draggedVector.y - prevDrag.y;
+
+    obj.rotation.z += distance * rotationSpeed;
 }

@@ -57,14 +57,9 @@ function startInputListener()
 function onMouseDown(event, fullScreenCanvas)
 {
 
-
     mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
     var cameraIndex = cameraManager.getCameraIndexFromMouse(mouse);
-
-    console.log(mouse.x + ":" + mouse.y);
-
-    console.log(cameraIndex);
 
     mouse = inputManager.screenToCameraSpace(mouse, cameraIndex);
     
