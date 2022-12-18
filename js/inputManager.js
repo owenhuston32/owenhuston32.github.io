@@ -10,64 +10,42 @@ export function getMousePosition(event, canvas)
     return mouse;
 }
 
-// figure out which corner of the screen was clicked
-export function getCornerClicked(mouse)
-{
-    if(mouse.x < 0)
-    {
-        if(mouse.y > 0)
-        {
-            //top left
-            return 0;
-        }
-        else
-        {
-            // bottom left
-            return 2;
-        }
-    }
-    else
-    {
-        if(mouse.y > 0)
-        {
-            //top right
-            return 1;
-        }
-        else
-        {
-            // bottom right
-            return 3;
-        }
-    }
-}
-
 export function screenToCameraSpace(mouse, cameraIndex)
 {
     var newMouse = new THREE.Vector2();
 
 //NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
 
-    // clicked on the left side of the screen
+    const newMax = 1, newMin = -1;
+    var oldMax, oldMin;
+
+    // left side of the screen
     if(cameraIndex == 0 || cameraIndex == 2)
     {
-        newMouse.x = (((mouse.x + 1) * (2)) / (1)) - 1;
+        oldMax = 0;
+        oldMin = -1;
     }
-    // clicked on the right side
     else
     {
-        newMouse.x = mouse.x * 2 - 1;
+        oldMax = 1;
+        oldMin = 0;
     }
 
-    // clicked on the top part of the screen
+    newMouse.x = (((mouse.x - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
+
+    // top side of the screen
     if(cameraIndex == 0 || cameraIndex == 1)
     {
-        newMouse.y = mouse.y * 2 - 1;
+        oldMax = 1;
+        oldMin = 0;
     }
-    // clicked on the bottom part
     else
     {
-        newMouse.y = (((mouse.y + 1) * (2)) / (1)) - 1;
+        oldMax = 0;
+        oldMin = -1;
     }
+
+    newMouse.y = (((mouse.y - oldMin) * (newMax - newMin)) / (oldMax - oldMin)) + newMin;
 
     return newMouse;
 

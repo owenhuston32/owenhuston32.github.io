@@ -1,40 +1,69 @@
-var container, renderer, canvas;
+var fullScreenCanvas;
+var canvasArray = [];
+var renderers = [];
 
     export function setupScreen(document)
     {
-        container = document.createElement('div');
+        var overlay = document.createElement('div');
+        overlay.setAttribute("id", "overlay");
+        document.body.appendChild(overlay);
+
+        var fullScreen = document.createElement('div');
+        fullScreen.setAttribute("id", "fullScreen");
+
+        for(var i = 0; i < 4; i++)
+        {
+            var cameraContainerDiv = document.createElement('div');
     
-        container.setAttribute("id", "screenContainer");
+            cameraContainerDiv.setAttribute("id", "cameraContainer" + i);
+
+            var renderer = new THREE.WebGLRenderer( { antialias: true } );
+
+            renderers.push(renderer);
         
-        renderer = new THREE.WebGLRenderer( { antialias: true } );
+            var canvas = renderer.domElement;
         
-        
-        canvas = renderer.domElement;
-        
-        container.appendChild(canvas);
-        
-        document.body.appendChild (container);
-        
-        window.addEventListener ('resize', onWindowResize(), false);
-        
+            canvasArray.push(canvas);
+
+            cameraContainerDiv.appendChild(canvas);
+
+            fullScreen.appendChild(cameraContainerDiv);
+        }
+
+        document.body.appendChild (fullScreen);
+
+        fullScreenCanvas = fullScreen;
     }
-        
-    export function getRenderer()
+    
+    export function getRenderers()
     {
-        return renderer;
+        return renderers;
     }
-        
-    export function getCanvas()
+    export function getFullScreenCanvas()
     {
-        return canvas;
+        return fullScreenCanvas;
+    }
+    export function getCanvasArray()
+    {
+        return canvasArray;
     }
 
     export function onWindowResize()
     {
-        // look up the size the canvas is being displayed
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        
-        renderer.setSize(width, height, false);
+        for(var i = 0; i < renderers.length; i++)
+        {
+            var width = canvasArray[i].width;
+            var height = canvasArray[i].height;
+            resizeRenderer(renderers[i], 0, 0, width, height);
+        }
     }
+
+    function resizeRenderer(renderer, left, bottom, width, height)
+    {
+        renderer.setViewport (left,bottom,width,height);
+        renderer.setScissor(left,bottom,width,height);
+        renderer.setScissorTest( true );
+
+    }
+
         
