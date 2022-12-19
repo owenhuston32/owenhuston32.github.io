@@ -1,6 +1,5 @@
 import * as pivotManager from './pivotManager.js';
-
-
+import * as objectManager from './objectManager.js';
 var rotationObj, rotationAxis, rotationAxisChar;
 var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
@@ -18,7 +17,9 @@ export function rotateObject(obj, draggedVector)
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
-            rotationObj = pivotManager.getLeftPivot();
+            rotationObj = pivotManager.getLeftPivot(objectManager.getCube());
+            pivotManager.disableLefttSide(objectManager.getCube());
+
             moveVertical = true;
         }
     }
@@ -64,18 +65,13 @@ export function stopRotating()
 
 function rotateVertical(obj, draggedVector)
 {
-    //if(obj.name === "FrontParent")
-    //{
-        rotateFrontVertical(obj, draggedVector);
-    //}
+    rotateFrontVertical(obj, draggedVector);
 
 }
 function rotateHorizonal(obj, draggedVector)
 {
-    if(obj.name === "FrontParent")
-    {
-        rotateFrontHorizontal(obj, draggedVector);
-    }
+    rotateFrontHorizontal(obj, draggedVector);
+
 }
 
 function rotateFrontVertical(obj, draggedVector)

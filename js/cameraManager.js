@@ -9,7 +9,7 @@ export function createCameras(canvasArray)
         if(i==0)
         {
             //top
-               subCamera.position.y = 20;
+               subCamera.position.y = 200;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
                subCamera.rotation.z = THREE.Math.degToRad(180);   
                subCamera.position.z = 15;

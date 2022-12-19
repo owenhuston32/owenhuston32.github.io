@@ -1,5 +1,33 @@
+var rightPivot = new THREE.Object3D(),
+leftPivot = new THREE.Object3D(),
+topPivot,
+bottomPivot,
+frontPivot,
+backPivot;
 
-var rightPivot, leftPivot, topPivot, bottomPivot, frontPivot, backPivot;
+
+var righPivotPositions = 
+["-1,-1,-1", 
+"-1,-1,0",
+"-1,-1,1",
+"-1,0,-1",
+"-1,0,0",
+"-1,0,1",
+"-1,1,-1",
+"-1,1,0",
+"-1,1,1"];
+
+
+var leftPivotPositions = 
+["1,-1,-1", 
+"1,-1,0",
+"1,-1,1",
+"1,0,-1",
+"1,0,0",
+"1,0,1",
+"1,1,-1",
+"1,1,0",
+"1,1,1"];
 
 export function getRightPivot()
 {
@@ -11,95 +39,41 @@ export function getLeftPivot()
     return leftPivot;
 }
 
-export function getTopPivot()
+export function createPivots(scene, cube)
 {
-    return topPivot;
+    updatePivot(scene, cube, leftPivotPositions, leftPivot);
 }
 
-export function getBottomPivot()
+function updatePivot(scene, cube, pivotPositions, pivot)
 {
-    return bottomPivot;
-}
 
-export function getFrontPivot()
-{
-    return frontPivot;
-}
-
-export function getBackPivot()
-{
-    return backPivot;
-}
-
-export function createPivots(scene)
-{
-    rightPivot = createPivot(scene, "RightParent");
-    scene.add(rightPivot);
-
-    leftPivot = createPivot(scene, "LeftParent");
-
-    var col = 0;
-    var rows = [0, 1, 2];
-
-    var sides = ["FrontParent", "TopParent", "BackParent", "BottomParent"];
-
-    for(var sideIndex = 0; sideIndex < sides.length; sideIndex++)
+    for(var i = 0; i < cube.children.length; i++)
     {
-        var children = scene.getObjectByName(sides[sideIndex]).children;
-        for(var i = 0; i < children.length; i++)
+        var child = cube.children[i];
+        var posString = child.userData.X + "," + child.userData.Y + "," + child.userData.Z;
+        
+        if(pivotPositions.includes(posString))
         {
-            var child = children[i];
-            if(rows.includes(child.userData.ROW)
-                && child.userData.COL == col)
-            {
-                leftPivot.attach(children[i]);
-            }
-        }    
+            pivot.attach(child.clone()); 
+        }
     }
-    
-    scene.add(leftPivot);
 
-    topPivot = createPivot(scene, "TopParent");
-    scene.add(topPivot);
-
-    bottomPivot = createPivot(scene, "BottomParent");
-    scene.add(bottomPivot);
-
-    frontPivot = createPivot(scene, "FrontParent");
-    scene.add(frontPivot);
-
-    backPivot = createPivot(scene, "BackParent");
-    scene.add(backPivot);
-
+    scene.add(pivot);
 }
 
-function createPivot(scene, parentName)
+export function disableLefttSide(cube)
 {
-    var pivot = new THREE.Group();
-    
-    var parent = scene.getObjectByName(parentName);
-
-    pivot.position.set(parent.position.x, parent.position.y, parent.position.z);
-    pivot.rotation.set(parent.rotation.x, parent.rotation.y, parent.rotation.z);
-
-    var childrenCopy = getChildrenCopy(parent);
-    for(var i = 0; i < childrenCopy.length; i++)
+    console.log("cube " + cube);
+    for(var i = 0; i < cube.children.length; i++)
     {
-        pivot.add(childrenCopy[i]);
+        var child = cube.children[i];
+        var posString = child.userData.X + "," + child.userData.Y + "," + child.userData.Z;
+        
+        console.log(posString);
+
+        if(leftPivotPositions.includes(posString))
+        {
+            child.visible = false;
+        }
     }
-
-    return pivot;
-
-}
-
-function getChildrenCopy(parent)
-{
-    var children = [];
-
-    for(var i = 0; i < parent.children.length; i++)
-    {
-        children.push(parent.children[i]);
-    }
-    return children;
-
 }

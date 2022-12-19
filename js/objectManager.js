@@ -6,9 +6,7 @@ var cubeObj;
 export function createCube(scene)
 {
     cubeObj = cube.createCube(scene);
-
-    pivotManager.createPivots(scene);
-
+    pivotManager.createPivots(scene, cubeObj);
 }
 
 export function getCube()
