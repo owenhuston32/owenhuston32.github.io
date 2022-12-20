@@ -7,15 +7,15 @@ backPivot = new THREE.Object3D();
 
 var frontPivotPositions = 
 [
-    "-1,-1,-1",
-    "0,-1,-1",
-    "1,-1,-1",
-    "-1,0,-1",
-    "0,0,-1",
-    "1,0,-1",
-    "-1,1,-1",
-    "0,1,-1",
-    "1,1,-1"
+    [-1,-1,-1],
+    [0,-1,-1],
+    [1,-1,-1],
+    [-1,0,-1],
+    [0,0,-1],
+    [1,0,-1],
+    [-1,1,-1],
+    [0,1,-1],
+    [1,1,-1]
 ];
 
 var backPivotPositions = 
@@ -24,28 +24,28 @@ var backPivotPositions =
 ];
 
 var righPivotPositions = 
-[   "-1,-1,-1", 
-    "-1,-1,0",
-    "-1,-1,1",
-    "-1,0,-1",
-    "-1,0,0",
-    "-1,0,1",
-    "-1,1,-1",
-    "-1,1,0",
-    "-1,1,1"
+[   [-1,-1,-1], 
+    [-1,-1,0],
+    [-1,-1,1],
+    [-1,0,-1],
+    [-1,0,0],
+    [-1,0,1],
+    [-1,1,-1],
+    [-1,1,0],
+    [-1,1,1]
 ];
 
 
 var leftPivotPositions = 
-[   "1,-1,-1", 
-    "1,-1,0",
-    "1,-1,1",
-    "1,0,-1",
-    "1,0,0",
-    "1,0,1",
-    "1,1,-1",
-    "1,1,0",
-    "1,1,1"
+[   [1,-1,-1], 
+    [1,-1,0],
+    [1,-1,1],
+    [1,0,-1],
+    [1,0,0],
+    [1,0,1],
+    [1,1,-1],
+    [1,1,0],
+    [1,1,1]
 ];
 
 var topPivotPositions = 
@@ -129,10 +129,8 @@ export function activateSide(sideName, cube, originalCubeVisible)
     var pivot = sideNameToPivot.get(sideName);
     var positions = sideNameToPositions.get(sideName);
 
-    console.log(sideName);
-
     updatePivot(cube, positions, pivot);
-    setOriginalCopyVisible(cube, positions, originalCubeVisible)
+    setOriginalCopyVisible(cube, pivot, positions, originalCubeVisible)
 
 }
 export function deactivateSide(cube, pivot)
@@ -141,7 +139,7 @@ export function deactivateSide(cube, pivot)
 
     var positions = sideNameToPositions.get(pivot.name);
 
-    setOriginalCopyVisible(cube, positions, pivot);
+    setOriginalCopyVisible(cube, pivot, positions, pivot);
 }
 
 
@@ -150,10 +148,10 @@ function updatePivot(cube, pivotPositions, pivot)
     for(var i = 0; i < cube.children.length; i++)
     {
         var child = cube.children[i];
-        var posString = child.userData.X + "," + child.userData.Y + "," + child.userData.Z;
+        var pos = [child.userData.X , child.userData.Y , child.userData.Z];
 
 
-        if(pivotPositions.includes(posString))
+        if(pivotListContainsPos(pos, pivotPositions))
         {
             pivot.attach(child.clone());
         }
@@ -162,19 +160,83 @@ function updatePivot(cube, pivotPositions, pivot)
     pivot.visible = true;
 
 }
-export function setOriginalCopyVisible(cube, pivotPositions, visible)
-{
-    for(var i = 0; i < cube.children.length; i++)
-    {
-        var child = cube.children[i];
-        var posString = child.userData.X + "," + child.userData.Y + "," + child.userData.Z;
 
-        if(pivotPositions.includes(posString))
+function pivotListContainsPos(pos, posList)
+{
+    for(var i = 0; i < posList.length; i++)
+    {
+        var subList = posList[i];
+        var result = true;
+        for(var j = 0; j < subList.length; j++)
         {
-            child.visible = visible;
+            if(subList[j] != pos[j])
+            {
+                result = false;
+            }
+
+        }
+
+        if(result)
+            return true;
+    }
+    return false;
+}
+
+export function setOriginalCopyVisible(cube, pivot, pivotPositions, visible)
+{
+
+    if(!visible)
+    {
+        for(var i = 0; i < cube.children.length; i++)
+        {
+            var child = cube.children[i];
+            var pos = [child.userData.X , child.userData.Y , child.userData.Z];
+    
+            if(pivotListContainsPos(pos, pivotPositions))
+            {
+                child.visible = visible;
+            }
         }
     }
+    else
+    {
+        copySideToOriginal(cube, pivot);
+    }
 }
+
+function copySideToOriginal(cube, pivot)
+{
+    for(var i = 0; i < pivot.children.length; i++)
+    {
+        var child = pivot.children[i];
+        var x = child.userData.X;
+        var y = child.userData.y;
+        var z = child.userData.z;
+        var sidePiece = getObjectFromPosition(pivot, x, y, z);
+        var originalPiece = getObjectFromPosition(cube, x, y, z);
+
+        cube.remove(originalPiece);
+        //cube.add(sidePiece);
+    }
+}
+
+function getObjectFromPosition(obj, x, y, z)
+{
+    for(var i = 0; i < obj.children.length; i++)
+    {
+        var child = obj.children[i]; 
+        if(child.userData.X == x
+            && child.userData.Y == y
+            && child.userData.Z == z)
+            {
+                console.log("true");
+                return child;
+
+            }
+    }
+    return null;
+}
+
 
 export function updateTags(pivot)
 {
