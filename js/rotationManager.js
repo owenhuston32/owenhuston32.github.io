@@ -1,5 +1,7 @@
 import * as pivotManager from './pivotManager.js';
 import * as objectManager from './objectManager.js';
+import * as sceneManager from './sceneManager.js';
+
 var rotationObj, rotationAxis, rotationAxisChar;
 var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
@@ -12,13 +14,19 @@ export function rotateObject(obj, draggedVector)
     {
         if(Math.abs(draggedVector.x) > 0.05)
         {
-            rotationObj = obj.parent;
+            pivotManager.activateSide("Front", objectManager.getCube(), false);
+
+            console.log(pivotManager.getFrontPivot());
+
+            rotationObj = pivotManager.getFrontPivot();
+
             moveHorizontal = true;
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
-            rotationObj = pivotManager.getLeftPivot(objectManager.getCube());
-            pivotManager.disableLefttSide(objectManager.getCube());
+            pivotManager.activateSide("Left", objectManager.getCube(), false);
+
+            rotationObj = pivotManager.getLeftPivot();
 
             moveVertical = true;
         }
@@ -48,14 +56,19 @@ export function stopRotating()
     if(rotationAxisChar === 'x')
     {
         rotationObj.rotation.x = degrees * Math.PI / 180;
+        console.log(pivotManager.getFrontPivot());
+        pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     }
     else if(rotationAxisChar === 'y')
     {
         rotationObj.rotation.y = degrees * Math.PI / 180;
+        pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     }
     else if(rotationAxisChar === 'z')
     {
         rotationObj.rotation.z = degrees * Math.PI / 180;
+        console.log(pivotManager.getFrontPivot());
+        pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     }
 
     moveHorizontal = false;
@@ -89,7 +102,7 @@ function rotateFrontHorizontal(obj, draggedVector)
     rotationAxis = obj.rotation.z;
     rotationAxisChar = 'z';
 
-    var distance = draggedVector.y - prevDrag.y;
+    var distance = draggedVector.x - prevDrag.x;
 
     obj.rotation.z += distance * rotationSpeed;
 }

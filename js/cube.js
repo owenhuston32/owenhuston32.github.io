@@ -51,7 +51,6 @@ function createPieces()
                     var piece = createBox();
                     piece.position.set(x * distanceBetweenPieces ,  y * distanceBetweenPieces , z * distanceBetweenPieces );
                     piece.userData = {X: x, Y: y, Z: z};
-                    console.log("pos: " + x + " " + y + " " + z);
                     cube.add(piece);
                 }
             }
