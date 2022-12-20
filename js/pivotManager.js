@@ -7,6 +7,7 @@ backPivot = new THREE.Object3D();
 
 var frontPivotPositions = 
 [
+    
     [-1,-1,-1],
     [0,-1,-1],
     [1,-1,-1],
@@ -16,6 +17,7 @@ var frontPivotPositions =
     [-1,1,-1],
     [0,1,-1],
     [1,1,-1]
+    
 ];
 
 var backPivotPositions = 
@@ -33,11 +35,12 @@ var righPivotPositions =
     [-1,1,-1],
     [-1,1,0],
     [-1,1,1]
+    
 ];
 
 
 var leftPivotPositions = 
-[   [1,-1,-1], 
+[   [1,-1,-1],
     [1,-1,0],
     [1,-1,1],
     [1,0,-1],
@@ -110,136 +113,86 @@ export function getLeftPivot()
     return leftPivot;
 }
 
-export function createPivots(scene, cube, originalCubeVisible)
+export function createPivots(scene)
 {
     for(var i = 0; i < sideNames.length; i++)
     {
-        var sideName = sideNames[i];
-        var pivot = sideNameToPivot.get(sideName);
-
-        activateSide(sideName, cube, originalCubeVisible);
-        pivot.name = sideName;
+        var name = sideNames[i];
+        var pivot = sideNameToPivot.get(name);
+        pivot.name = name;
         scene.add(pivot);
-        pivot.visible = false;
     }
-
 }
-export function activateSide(sideName, cube, originalCubeVisible)
+
+export function changeParent(originalParent, newParent, sideName)
 {
-    var pivot = sideNameToPivot.get(sideName);
     var positions = sideNameToPositions.get(sideName);
-
-    updatePivot(cube, positions, pivot);
-    setOriginalCopyVisible(cube, pivot, positions, originalCubeVisible)
-
-}
-export function deactivateSide(cube, pivot)
-{
-    pivot.visible = false;
-
-    var positions = sideNameToPositions.get(pivot.name);
-
-    setOriginalCopyVisible(cube, pivot, positions, pivot);
-}
-
-
-function updatePivot(cube, pivotPositions, pivot)
-{
-    for(var i = 0; i < cube.children.length; i++)
+    for(var i = 0; i < positions.length; i++)
     {
-        var child = cube.children[i];
-        var pos = [child.userData.X , child.userData.Y , child.userData.Z];
-
-
-        if(pivotListContainsPos(pos, pivotPositions))
+        var child = getChildFromUserData(originalParent, positions[i]);
+        
+        if(child != null)
         {
-            pivot.attach(child.clone());
+            newParent.attach(child);
         }
     }
-    
-    pivot.visible = true;
-
 }
 
-function pivotListContainsPos(pos, posList)
-{
-    for(var i = 0; i < posList.length; i++)
-    {
-        var subList = posList[i];
-        var result = true;
-        for(var j = 0; j < subList.length; j++)
-        {
-            if(subList[j] != pos[j])
-            {
-                result = false;
-            }
-
-        }
-
-        if(result)
-            return true;
-    }
-    return false;
-}
-
-export function setOriginalCopyVisible(cube, pivot, pivotPositions, visible)
+function getChildFromUserData(obj, posArray)
 {
 
-    if(!visible)
-    {
-        for(var i = 0; i < cube.children.length; i++)
-        {
-            var child = cube.children[i];
-            var pos = [child.userData.X , child.userData.Y , child.userData.Z];
-    
-            if(pivotListContainsPos(pos, pivotPositions))
-            {
-                child.visible = visible;
-            }
-        }
-    }
-    else
-    {
-        copySideToOriginal(cube, pivot);
-    }
-}
 
-function copySideToOriginal(cube, pivot)
-{
-    for(var i = 0; i < pivot.children.length; i++)
-    {
-        var child = pivot.children[i];
-        var x = child.userData.X;
-        var y = child.userData.y;
-        var z = child.userData.z;
-        var sidePiece = getObjectFromPosition(pivot, x, y, z);
-        var originalPiece = getObjectFromPosition(cube, x, y, z);
-
-        cube.remove(originalPiece);
-        //cube.add(sidePiece);
-    }
-}
-
-function getObjectFromPosition(obj, x, y, z)
-{
     for(var i = 0; i < obj.children.length; i++)
     {
-        var child = obj.children[i]; 
-        if(child.userData.X == x
-            && child.userData.Y == y
-            && child.userData.Z == z)
+        var child = obj.children[i];
+        var childX = child.userData.X;
+        var childY = child.userData.Y;
+        var childZ = child.userData.Z;
+        if(childX == posArray[0]
+            && childY == posArray[1]
+            && childZ == posArray[2])
             {
-                console.log("true");
                 return child;
-
             }
     }
     return null;
 }
 
 
+
+export function deactivateSide(cube, pivot)
+{
+
+    console.log("BEFORE DEACTIVATE");
+
+    console.log("cube");
+    console.log(cube);
+
+    console.log("pivot");
+    console.log(pivot);
+
+    updateTags(pivot);
+
+    changeParent(pivot, cube, pivot.name);
+
+    console.log("AFTER DEACTIVATE");
+
+    console.log("cube");
+    console.log(cube);
+
+    console.log("pivot");
+    console.log(pivot);
+
+
+}
+
+
+
+
+
 export function updateTags(pivot)
 {
+    console.log("new tags");
     for(var i = 0; i < pivot.children.length; i ++)
     {
         var child = pivot.children[i];
@@ -247,8 +200,19 @@ export function updateTags(pivot)
         var worldPos = new THREE.Vector3();
         child.getWorldPosition(worldPos);
 
-        child.userData = {X : Math.round(worldPos.x / 6),
-            Y : Math.round(worldPos.y / 6),
-            Z : Math.round(worldPos.z / 6)};
+
+        var x = Math.round(worldPos.x / 6);
+        var y = Math.round(worldPos.y / 6);
+        var z = Math.round(worldPos.z / 6);
+
+
+        console.log("update tags" + x + " : " + y + " : " + z);
+
+
+        child.userData = {X : x,
+            Y : y,
+            Z : z};
+
+
     }
 }

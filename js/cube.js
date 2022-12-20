@@ -30,7 +30,7 @@ const distanceBetweenPieces = 6;
 export function createCube(scene)
 {
     cube = createPieces();
-
+    cube.name = "Cube";
     scene.add(cube);
 
     return cube;
@@ -46,25 +46,18 @@ function createPieces()
         {
             for(var z = -1; z < 2; z++)
             {
-                if(isSide(x,y,z))
-                {
-                    var piece = createBox();
-                    piece.position.set(x * distanceBetweenPieces ,  y * distanceBetweenPieces , z * distanceBetweenPieces );
-                    piece.userData = {X: x, Y: y, Z: z};
-                    cube.add(piece);
-                }
+
+                        var piece = createBox();
+                        piece.position.set(x * distanceBetweenPieces ,  y * distanceBetweenPieces , z * distanceBetweenPieces );
+                        piece.userData = {X: x, Y: y, Z: z};
+                        cube.add(piece);
+                    
             }
         }
     }
 
 
     return cube;
-}
-
-function isSide(x,y,z)
-{
-    return (Math.abs(x) == 1 || Math.abs(y) == 1
-    || Math.abs(z) == 1);
 }
 
 function createBox()

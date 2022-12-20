@@ -14,20 +14,14 @@ export function rotateObject(obj, draggedVector)
     {
         if(Math.abs(draggedVector.x) > 0.05)
         {
-            pivotManager.activateSide("Front", objectManager.getCube(), false);
-
-            console.log(pivotManager.getFrontPivot());
-
             rotationObj = pivotManager.getFrontPivot();
-
+            pivotManager.changeParent(objectManager.getCube(), rotationObj, "Front");
             moveHorizontal = true;
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
-            pivotManager.activateSide("Left", objectManager.getCube(), false);
-
-            rotationObj = pivotManager.getLeftPivot();
-
+            rotationObj = pivotManager.getRightPivot();
+            pivotManager.changeParent(objectManager.getCube(), rotationObj, "Right");
             moveVertical = true;
         }
     }
@@ -56,7 +50,6 @@ export function stopRotating()
     if(rotationAxisChar === 'x')
     {
         rotationObj.rotation.x = degrees * Math.PI / 180;
-        console.log(pivotManager.getFrontPivot());
         pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     }
     else if(rotationAxisChar === 'y')
@@ -67,7 +60,6 @@ export function stopRotating()
     else if(rotationAxisChar === 'z')
     {
         rotationObj.rotation.z = degrees * Math.PI / 180;
-        console.log(pivotManager.getFrontPivot());
         pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     }
 
