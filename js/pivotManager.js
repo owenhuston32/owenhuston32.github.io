@@ -8,15 +8,15 @@ backPivot = new THREE.Object3D();
 var frontPivotPositions = 
 [
     
-    [-1,-1,-1],
-    [0,-1,-1],
-    [1,-1,-1],
-    [-1,0,-1],
-    [0,0,-1],
-    [1,0,-1],
-    [-1,1,-1],
-    [0,1,-1],
-    [1,1,-1]
+    [-6,-6,-6],
+    [0,-6,-6],
+    [6,-6,-6],
+    [-6,0,-6],
+    [0,0,-6],
+    [6,0,-6],
+    [-6,6,-6],
+    [0,6,-6],
+    [6,6,-6]
     
 ];
 
@@ -26,29 +26,29 @@ var backPivotPositions =
 ];
 
 var righPivotPositions = 
-[   [-1,-1,-1], 
-    [-1,-1,0],
-    [-1,-1,1],
-    [-1,0,-1],
-    [-1,0,0],
-    [-1,0,1],
-    [-1,1,-1],
-    [-1,1,0],
-    [-1,1,1]
+[   [-6,-6,-6], 
+    [-6,-6,0],
+    [-6,-6,6],
+    [-6,0,-6],
+    [-6,0,0],
+    [-6,0,6],
+    [-6,6,-6],
+    [-6,6,0],
+    [-6,6,6]
     
 ];
 
 
 var leftPivotPositions = 
-[   [1,-1,-1],
-    [1,-1,0],
-    [1,-1,1],
-    [1,0,-1],
-    [1,0,0],
-    [1,0,1],
-    [1,1,-1],
-    [1,1,0],
-    [1,1,1]
+[   [6,-6,-6],
+    [6,-6,0],
+    [6,-6,6],
+    [6,0,-6],
+    [6,0,0],
+    [6,0,6],
+    [6,6,-6],
+    [6,6,0],
+    [6,6,6]
 ];
 
 var topPivotPositions = 
@@ -162,56 +162,35 @@ function getChildFromUserData(obj, posArray)
 
 export function deactivateSide(cube, pivot)
 {
-
-    console.log("BEFORE DEACTIVATE");
-
-    console.log("cube");
-    console.log(cube);
-
-    console.log("pivot");
-    console.log(pivot);
-
     updateTags(pivot);
-
     changeParent(pivot, cube, pivot.name);
-
-    console.log("AFTER DEACTIVATE");
-
-    console.log("cube");
-    console.log(cube);
-
-    console.log("pivot");
-    console.log(pivot);
-
-
 }
-
 
 
 
 
 export function updateTags(pivot)
 {
+
     console.log("new tags");
     for(var i = 0; i < pivot.children.length; i ++)
     {
         var child = pivot.children[i];
+    
 
-        var worldPos = new THREE.Vector3();
+        var worldPos =new THREE.Vector3();
+
         child.getWorldPosition(worldPos);
 
+        worldPos.x = Math.round(worldPos.x / 6) * 6;
+        worldPos.y = Math.round(worldPos.y / 6) * 6;
+        worldPos.z = Math.round(worldPos.z / 6) * 6;
 
-        var x = Math.round(worldPos.x / 6);
-        var y = Math.round(worldPos.y / 6);
-        var z = Math.round(worldPos.z / 6);
+        child.userData = {X : worldPos.x,
+            Y : worldPos.y,
+            Z : worldPos.z};
 
-
-        console.log("update tags" + x + " : " + y + " : " + z);
-
-
-        child.userData = {X : x,
-            Y : y,
-            Z : z};
+        console.log(worldPos);
 
 
     }

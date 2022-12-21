@@ -47,10 +47,15 @@ function createPieces()
             for(var z = -1; z < 2; z++)
             {
 
-                        var piece = createBox();
-                        piece.position.set(x * distanceBetweenPieces ,  y * distanceBetweenPieces , z * distanceBetweenPieces );
-                        piece.userData = {X: x, Y: y, Z: z};
-                        cube.add(piece);
+
+
+                var piece = createBox();
+                var xPos = x * distanceBetweenPieces;
+                var yPos = y * distanceBetweenPieces;
+                var zPos = z * distanceBetweenPieces;
+                piece.position.set(xPos, yPos , zPos );
+                piece.userData = {X: xPos, Y: yPos, Z: zPos};
+                cube.add(piece);
                     
             }
         }
