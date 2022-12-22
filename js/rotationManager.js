@@ -4,36 +4,36 @@ import * as objectManager from './objectManager.js';
 var rotationObj, currentRotation, rotationAxis;
 var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
-var moveHorizontal = false, moveVertical = false;
+var shouldMove = false;
+var mouseMoveAxis = new THREE.Vector2();
 
 export function rotateObject(obj, draggedVector)
 {
     // if we arent moving in a direction yet
-    if(!moveHorizontal && !moveVertical)
+    if(!shouldMove)
     {
         if(Math.abs(draggedVector.x) > 0.05)
         {
             rotationObj = pivotManager.getFrontPivot();
             pivotManager.changeParent(objectManager.getCube(), rotationObj, "Front");
-            moveHorizontal = true;
+                    
+            rotationAxis = new THREE.Vector3(0,0,1);
+            mouseMoveAxis = new THREE.Vector2(1,0);
+            shouldMove = true;
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
             rotationObj = pivotManager.getLeftPivot();
             pivotManager.changeParent(objectManager.getCube(), rotationObj, "Left");
-            moveVertical = true;
+            
+            rotationAxis = new THREE.Vector3(1,0,0);
+            mouseMoveAxis = new THREE.Vector2(0,1);
+            shouldMove = true;
         }
     }
-    else if(moveVertical)
+    else if(shouldMove)
     {
-        rotationAxis = new THREE.Vector3(1,0,0);
-        rotateVertical(rotationObj, draggedVector);
-    }
-    else
-    {
-        
-        rotationAxis = new THREE.Vector3(0,0,1);
-        rotateHorizonal(rotationObj, draggedVector);
+        setRotation(rotationObj, draggedVector);
     }
 
     prevDrag.x = draggedVector.x;
@@ -43,10 +43,17 @@ export function rotateObject(obj, draggedVector)
 export function stopRotating()
 {
 
-    if(moveHorizontal || moveVertical)
+    if(shouldMove)
     {
+        var rotationDistance = 
+            rotationAxis.x * currentRotation.x
+            + rotationAxis.y * currentRotation.y
+            + rotationAxis.z * currentRotation.z;
+
+    
+
         // rads to degrees = rad * 180 / PI
-        var degrees = currentRotation * 180 / Math.PI;
+        var degrees = rotationDistance * 180 / Math.PI;
         // round to nearest 90 degree
         degrees = Math.round(degrees / 90) * 90;
 
@@ -65,37 +72,24 @@ export function stopRotating()
         pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     
 
-        moveHorizontal = false;
-        moveVertical = false;
+        shouldMove = false;
     }
 
 }
 
-function rotateVertical(obj, draggedVector)
+function setRotation(obj, draggedVector)
 {
-    rotateFrontVertical(obj, draggedVector);
+    currentRotation = obj.rotation;
 
-}
-function rotateHorizonal(obj, draggedVector)
-{
-    rotateFrontHorizontal(obj, draggedVector);
+    var draggedMouseDistance = 
+        ((draggedVector.x - prevDrag.x) * mouseMoveAxis.x 
+        + (draggedVector.y - prevDrag.y) * mouseMoveAxis.y);
 
-}
+    
+    obj.rotation.set(
+        currentRotation.x + (draggedMouseDistance * rotationSpeed * rotationAxis.x),
+        currentRotation.y + (draggedMouseDistance * rotationSpeed * rotationAxis.y),
+        currentRotation.z + (draggedMouseDistance * rotationSpeed * rotationAxis.z)
+    );
 
-function rotateFrontVertical(obj, draggedVector)
-{
-    currentRotation = obj.rotation.x;
-
-    var distance = draggedVector.y - prevDrag.y;
-
-    obj.rotation.x += distance * rotationSpeed;
-}
-
-function rotateFrontHorizontal(obj, draggedVector)
-{
-    currentRotation = obj.rotation.z;
-
-    var distance = draggedVector.x - prevDrag.x;
-
-    obj.rotation.z += distance * rotationSpeed;
 }

@@ -6,11 +6,11 @@ var cubeSize = 5;
 
 const materials = [
     new THREE.MeshPhongMaterial({color: 'white'})
-    ,new THREE.MeshPhongMaterial({color: 'yellow'})
-    ,new THREE.MeshPhongMaterial({color: 'green'})
-    ,new THREE.MeshPhongMaterial({color: 'blue'})
     ,new THREE.MeshPhongMaterial({color: 'red'})
-    ,new THREE.MeshPhongMaterial({color: 0xFF8C00})
+    ,new THREE.MeshPhongMaterial({color: 'green'})
+    ,new THREE.MeshPhongMaterial({color: 'orange'})
+    ,new THREE.MeshPhongMaterial({color: 'yellow'})
+    ,new THREE.MeshPhongMaterial({color: 'blue'})
         ,new THREE.MeshPhongMaterial({color: 'deeppink'})
 ];
 
@@ -76,25 +76,30 @@ function createBox()
 function addStickers(obj)
 {
 
+    //front sticker
     addSticker(obj, frontStickerMesh, materials[0], 
         new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z - cubeSize / 2 + .01), "FrontFace");
 
-
-    addSticker(obj, frontStickerMesh, materials[1], 
+    //top sticker
+    addSticker(obj, topStickerMesh, materials[1], 
+        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y + cubeSize / 2 + .01, topStickerMesh.position.z), "TopFace");
+           
+    //back sticker
+    addSticker(obj, frontStickerMesh, materials[2], 
         new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z + cubeSize / 2 + .01), "BackFace");
     
-    addSticker(obj, sideStickerMesh, materials[2], 
+    //bottom sticker
+    addSticker(obj, topStickerMesh, materials[3], 
+        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y - cubeSize / 2 + .01, topStickerMesh.position.z), "BottomFace");
+
+    //left sticker
+    addSticker(obj, sideStickerMesh, materials[4], 
+        new THREE.Vector3(sideStickerMesh.position.x + cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "LeftFace");
+                  
+    //right sticker
+    addSticker(obj, sideStickerMesh, materials[5], 
         new THREE.Vector3(sideStickerMesh.position.x - cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "RightFace");
     
-    addSticker(obj, sideStickerMesh, materials[3], 
-        new THREE.Vector3(sideStickerMesh.position.x + cubeSize / 2 - .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "LeftFace");
-          
-    addSticker(obj, topStickerMesh, materials[4], 
-        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y + cubeSize / 2 + .01, topStickerMesh.position.z), "TopFace");
-        
-    addSticker(obj, topStickerMesh, materials[5], 
-        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y - cubeSize / 2 + .01, topStickerMesh.position.z), "BottomFace");
-             
     
 }
 
