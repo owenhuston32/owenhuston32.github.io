@@ -5,7 +5,7 @@ import * as inputManager from './inputManager.js';
 import * as raycaster from './raycastManager.js';
 import * as objectManager from './objectManager.js';
 
-var mouse, pressedObject, cameraIndex;
+var pressedObject;
 
 init();
 
@@ -57,7 +57,7 @@ function startInputListener()
 function onMouseDown(event, fullScreenCanvas)
 {
 
-    mouse = inputManager.onMouseDown(event, fullScreenCanvas);
+    var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
     var cameraIndex = cameraManager.getCameraIndexFromMouse(mouse);
 
@@ -73,7 +73,7 @@ function onMouseMove(event, fullScreenCanvas)
 
     if(pressedObject)
     {
-        objectManager.rotateObject(pressedObject, draggedVector, cameraIndex);
+        objectManager.rotateObject(pressedObject, draggedVector);
     }
 
 }

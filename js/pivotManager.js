@@ -71,56 +71,52 @@ var sideNames =
     "Bottom"
 ];
 
-var sideNameToPositions = new Map(
-    [
-        ["Front", frontPivotPositions],
-        ["Back", backPivotPositions],
-        ["Right", righPivotPositions],
-        ["Left", leftPivotPositions],
-        ["Top", topPivotPositions],
-        ["Bottom", bottomPivotPositions]
-    ]
-);
+var pivotPositions =
+[
+    frontPivotPositions,
+    backPivotPositions,
+    righPivotPositions,
+    leftPivotPositions,
+    topPivotPositions,
+    bottomPivotPositions
+];
 
-var sideNameToPivot = new Map(
-    [
-        ["Front", frontPivot],
-        ["Back", backPivot],
-        ["Right", rightPivot],
-        ["Left", leftPivot],
-        ["Top", topPivot],
-        ["Bottom", bottomPivot]
-    ]
-);
+var pivots = 
+[
+    frontPivot,
+    backPivot,
+    rightPivot,
+    leftPivot,
+    topPivot,
+    bottomPivot
 
-export function getFrontPivot()
-{
-    return frontPivot;
-}
+];
 
-export function getBackPivot()
-{
-    return backPivot;
-}
 
-export function getRightPivot()
-{
-    return rightPivot;
-}
+var sideNameToPositions = new Map();
 
-export function getLeftPivot()
-{
-    return leftPivot;
-}
+var sideNameToPivot = new Map();
 
 export function createPivots(scene)
 {
+    initializeMaps();
     for(var i = 0; i < sideNames.length; i++)
     {
         var name = sideNames[i];
         var pivot = sideNameToPivot.get(name);
+        console.log(pivot);
         pivot.name = name;
         scene.add(pivot);
+    }
+}
+
+function initializeMaps()
+{
+    for(var i = 0; i < sideNames.length; i++)
+    {
+        sideNameToPositions.set(sideNames[i], pivotPositions[i]);
+        sideNameToPivot.set(sideNames[i], pivots[i]);
+        
     }
 }
 
@@ -140,7 +136,6 @@ export function changeParent(originalParent, newParent, sideName)
 
 function getChildFromUserData(obj, posArray)
 {
-
 
     for(var i = 0; i < obj.children.length; i++)
     {
@@ -162,6 +157,7 @@ function getChildFromUserData(obj, posArray)
 
 export function deactivateSide(cube, pivot)
 {
+    updateFaceNames(pivot);
     updateTags(pivot);
     changeParent(pivot, cube, pivot.name);
 }
@@ -194,4 +190,20 @@ export function updateTags(pivot)
 
 
     }
+}
+
+function updateFaceNames(pivot)
+{
+
+}
+
+export function getPivotFromMouseMove(pressedObj, mouseMoveAxis)
+{
+
+    if(mouseMoveAxis.x == 1)
+    {
+        return frontPivot;
+    }
+
+    return rightPivot;
 }

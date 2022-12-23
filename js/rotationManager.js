@@ -7,27 +7,28 @@ var prevDrag = new THREE.Vector2();
 var shouldMove = false;
 var mouseMoveAxis = new THREE.Vector2();
 
-export function rotateObject(obj, draggedVector)
+export function rotateObject(pressedObj, draggedVector)
 {
     // if we arent moving in a direction yet
     if(!shouldMove)
     {
         if(Math.abs(draggedVector.x) > 0.05)
         {
-            rotationObj = pivotManager.getFrontPivot();
-            pivotManager.changeParent(objectManager.getCube(), rotationObj, "Front");
                     
             rotationAxis = new THREE.Vector3(0,0,1);
             mouseMoveAxis = new THREE.Vector2(1,0);
+            
+            rotationObj = pivotManager.getPivotFromMouseMove(pressedObj, mouseMoveAxis);
+            pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
             shouldMove = true;
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
-            rotationObj = pivotManager.getLeftPivot();
-            pivotManager.changeParent(objectManager.getCube(), rotationObj, "Left");
-            
             rotationAxis = new THREE.Vector3(1,0,0);
             mouseMoveAxis = new THREE.Vector2(0,1);
+            
+            rotationObj = pivotManager.getPivotFromMouseMove(pressedObj, mouseMoveAxis);
+            pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
             shouldMove = true;
         }
     }
@@ -49,7 +50,6 @@ export function stopRotating()
             rotationAxis.x * currentRotation.x
             + rotationAxis.y * currentRotation.y
             + rotationAxis.z * currentRotation.z;
-
     
 
         // rads to degrees = rad * 180 / PI
@@ -59,19 +59,14 @@ export function stopRotating()
 
         var radians = degrees * Math.PI / 180;
 
-        var newRotation = new THREE.Vector3();
-        newRotation.set(rotationAxis.x * radians,
+        rotationObj.rotation.set(rotationAxis.x * radians,
             rotationAxis.y * radians,
             rotationAxis.z * radians);
-
-        rotationObj.rotation.set(newRotation.x,
-            newRotation.y,newRotation.z);
 
         rotationObj.updateMatrixWorld(true);
 
         pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
     
-
         shouldMove = false;
     }
 

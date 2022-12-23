@@ -1,7 +1,5 @@
 var cube = new THREE.Object3D();
 
-var box;
-
 var cubeSize = 5;
 
 const materials = [
@@ -27,7 +25,7 @@ const distanceBetweenPieces = 6;
 
 export function createCube(scene)
 {
-    box = createBox();
+    var box = createBox();
     cube = createPieces(box);
     cube.name = "Cube";
     scene.add(cube);
@@ -76,6 +74,7 @@ function createBox()
 function addStickers(obj)
 {
 
+    var cubeSize = 5;
     //front sticker
     addSticker(obj, frontStickerMesh, materials[0], 
         new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z - cubeSize / 2 + .01), "FrontFace");
