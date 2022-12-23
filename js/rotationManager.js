@@ -12,24 +12,26 @@ export function rotateObject(pressedObj, draggedVector)
     // if we arent moving in a direction yet
     if(!shouldMove)
     {
-        if(Math.abs(draggedVector.x) > 0.05)
+        var xDist = Math.abs(draggedVector.x);
+        var yDist = Math.abs(draggedVector.y);
+        if(xDist > 0.05 || yDist > 0.05)
         {
-                    
-            rotationAxis = new THREE.Vector3(0,0,1);
-            mouseMoveAxis = new THREE.Vector2(1,0);
-            
+            if(xDist > yDist)
+            {
+                mouseMoveAxis = new THREE.Vector2(1,0);
+            }
+            else
+            {
+                mouseMoveAxis = new THREE.Vector2(0,1);
+            }
             rotationObj = pivotManager.getPivotFromMouseMove(pressedObj, mouseMoveAxis);
-            pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
-            shouldMove = true;
-        }
-        else if(Math.abs(draggedVector.y) > 0.05)
-        {
-            rotationAxis = new THREE.Vector3(1,0,0);
-            mouseMoveAxis = new THREE.Vector2(0,1);
             
-            rotationObj = pivotManager.getPivotFromMouseMove(pressedObj, mouseMoveAxis);
-            pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
-            shouldMove = true;
+            if(rotationObj != null)
+            {
+                rotationAxis = pivotManager.getRotationAxis(rotationObj.name);
+                pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
+                shouldMove = true;
+            }
         }
     }
     else if(shouldMove)

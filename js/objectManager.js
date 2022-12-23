@@ -14,9 +14,9 @@ export function getCube()
     return cubeObj;
 }
 
-export function rotateObject(obj, draggedVector, rightPivot)
+export function rotateObject(pressedObj, draggedVector)
 {
-    rotationManager.rotateObject(obj, draggedVector, rightPivot);
+    rotationManager.rotateObject(pressedObj, draggedVector);
 }
 
 export function stopRotating()

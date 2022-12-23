@@ -5,7 +5,7 @@ bottomPivot = new THREE.Object3D(),
 frontPivot = new THREE.Object3D(),
 backPivot = new THREE.Object3D();
 
-var frontPivotPositions = 
+const frontPivotPositions = 
 [
     
     [-6,-6,-6],
@@ -20,48 +20,17 @@ var frontPivotPositions =
     
 ];
 
-var backPivotPositions = 
-[
+const backPivotPositions = [];
 
-];
+const righPivotPositions = [];
 
-var righPivotPositions = 
-[   [-6,-6,-6], 
-    [-6,-6,0],
-    [-6,-6,6],
-    [-6,0,-6],
-    [-6,0,0],
-    [-6,0,6],
-    [-6,6,-6],
-    [-6,6,0],
-    [-6,6,6]
-    
-];
+const leftPivotPositions = [];
 
+const topPivotPositions = [];
 
-var leftPivotPositions = 
-[   [6,-6,-6],
-    [6,-6,0],
-    [6,-6,6],
-    [6,0,-6],
-    [6,0,0],
-    [6,0,6],
-    [6,6,-6],
-    [6,6,0],
-    [6,6,6]
-];
+const bottomPivotPositions =[];
 
-var topPivotPositions = 
-[
-
-];
-
-var bottomPivotPositions =
-[
-
-];
-
-var sideNames = 
+const sideNames = 
 [
     "Front",
     "Back",
@@ -71,7 +40,7 @@ var sideNames =
     "Bottom"
 ];
 
-var pivotPositions =
+const pivotPositions =
 [
     frontPivotPositions,
     backPivotPositions,
@@ -81,7 +50,7 @@ var pivotPositions =
     bottomPivotPositions
 ];
 
-var pivots = 
+const pivots = 
 [
     frontPivot,
     backPivot,
@@ -89,10 +58,22 @@ var pivots =
     leftPivot,
     topPivot,
     bottomPivot
-
 ];
 
+const xAxis = new THREE.Vector3(1,0,0);
+const yAxis = new THREE.Vector3(0,1,0);
+const negZAxis = new THREE.Vector3(0,0,-1);
 
+const pivotNameToRotationAxis = new Map(
+    [
+        [sideNames[0], negZAxis],
+        [sideNames[1], negZAxis],
+        [sideNames[2], xAxis],
+        [sideNames[3], xAxis],
+        [sideNames[4], yAxis],
+        [sideNames[5], yAxis],
+    ]
+);
 var sideNameToPositions = new Map();
 
 var sideNameToPivot = new Map();
@@ -100,13 +81,34 @@ var sideNameToPivot = new Map();
 export function createPivots(scene)
 {
     initializeMaps();
+    initializePivotPositions();
     for(var i = 0; i < sideNames.length; i++)
     {
         var name = sideNames[i];
         var pivot = sideNameToPivot.get(name);
-        console.log(pivot);
         pivot.name = name;
         scene.add(pivot);
+    }
+}
+
+function initializePivotPositions()
+{
+    for(var i = 0; i < frontPivotPositions.length; i++)
+    {
+        var arr = frontPivotPositions[i];
+        var rightArr = [arr[2], arr[1], arr[0]];
+        var leftArr = [arr[2] * -1, arr[1], arr[0]];
+        var topArr = [arr[1], arr[2] * -1, arr[0]];
+        var bottomArr = [arr[1], arr[2], arr[0]];
+        var backArr = [arr[0], arr[1], arr[2] * -1];
+
+
+        righPivotPositions[i] = rightArr; 
+        leftPivotPositions[i] = leftArr;
+        topPivotPositions[i] = topArr;
+        bottomPivotPositions[i] = bottomArr;
+        backPivotPositions[i] = backArr;
+
     }
 }
 
@@ -199,11 +201,46 @@ function updateFaceNames(pivot)
 
 export function getPivotFromMouseMove(pressedObj, mouseMoveAxis)
 {
-
     if(mouseMoveAxis.x == 1)
     {
-        return frontPivot;
+        if(pressedObj.name == "FrontFace" || pressedObj.name == "RightFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.Y, [topPivot, bottomPivot]);
+        }
+        else if(pressedObj.name == "TopFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.Z, [backPivot, frontPivot]);
+        }
+    }
+    else if(mouseMoveAxis.y == 1)
+    {
+        if(pressedObj.name == "FrontFace" || pressedObj.name == "TopFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.X, [leftPivot, rightPivot]);
+        }
+        else if(pressedObj.name == "RightFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.Z, [backPivot, frontPivot]);
+        }
     }
 
-    return rightPivot;
+    return null;
+}
+
+function getPivotFromFace(userDataVal, pivotArray)
+{
+    if(userDataVal == 6)
+    {
+        return pivotArray[0];
+    }
+    else if(userDataVal == -6)
+    {
+        return pivotArray[1];
+    }
+    return null;
+}
+
+export function getRotationAxis(pivotName)
+{
+    return pivotNameToRotationAxis.get(pivotName);
 }

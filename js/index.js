@@ -47,7 +47,6 @@ function startInputListener()
 
     document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
 
-
     document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
     document.onmouseup = function(){onMouseUp()};
