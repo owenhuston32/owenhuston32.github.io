@@ -1,105 +1,246 @@
+var rightPivot = new THREE.Object3D(),
+leftPivot = new THREE.Object3D(),
+topPivot = new THREE.Object3D(),
+bottomPivot = new THREE.Object3D(),
+frontPivot = new THREE.Object3D(),
+backPivot = new THREE.Object3D();
 
-var rightPivot, leftPivot, topPivot, bottomPivot, frontPivot, backPivot;
+const frontPivotPositions = 
+[
+    
+    [-6,-6,-6],
+    [0,-6,-6],
+    [6,-6,-6],
+    [-6,0,-6],
+    [0,0,-6],
+    [6,0,-6],
+    [-6,6,-6],
+    [0,6,-6],
+    [6,6,-6]
+    
+];
 
-export function getRightPivot()
-{
-    return rightPivot;
-}
+const backPivotPositions = [];
 
-export function getLeftPivot()
-{
-    return leftPivot;
-}
+const righPivotPositions = [];
 
-export function getTopPivot()
-{
-    return topPivot;
-}
+const leftPivotPositions = [];
 
-export function getBottomPivot()
-{
-    return bottomPivot;
-}
+const topPivotPositions = [];
 
-export function getFrontPivot()
-{
-    return frontPivot;
-}
+const bottomPivotPositions =[];
 
-export function getBackPivot()
-{
-    return backPivot;
-}
+const sideNames = 
+[
+    "Front",
+    "Back",
+    "Right",
+    "Left",
+    "Top",
+    "Bottom"
+];
+
+const pivotPositions =
+[
+    frontPivotPositions,
+    backPivotPositions,
+    righPivotPositions,
+    leftPivotPositions,
+    topPivotPositions,
+    bottomPivotPositions
+];
+
+const pivots = 
+[
+    frontPivot,
+    backPivot,
+    rightPivot,
+    leftPivot,
+    topPivot,
+    bottomPivot
+];
+
+const xAxis = new THREE.Vector3(1,0,0);
+const yAxis = new THREE.Vector3(0,1,0);
+const negZAxis = new THREE.Vector3(0,0,-1);
+
+const pivotNameToRotationAxis = new Map(
+    [
+        [sideNames[0], negZAxis],
+        [sideNames[1], negZAxis],
+        [sideNames[2], xAxis],
+        [sideNames[3], xAxis],
+        [sideNames[4], yAxis],
+        [sideNames[5], yAxis],
+    ]
+);
+var sideNameToPositions = new Map();
+
+var sideNameToPivot = new Map();
 
 export function createPivots(scene)
 {
-    rightPivot = createPivot(scene, "RightParent");
-    scene.add(rightPivot);
-
-    leftPivot = createPivot(scene, "LeftParent");
-
-    var col = 0;
-    var rows = [0, 1, 2];
-
-    var sides = ["FrontParent", "TopParent", "BackParent", "BottomParent"];
-
-    for(var sideIndex = 0; sideIndex < sides.length; sideIndex++)
+    initializeMaps();
+    initializePivotPositions();
+    for(var i = 0; i < sideNames.length; i++)
     {
-        var children = scene.getObjectByName(sides[sideIndex]).children;
-        for(var i = 0; i < children.length; i++)
+        var name = sideNames[i];
+        var pivot = sideNameToPivot.get(name);
+        pivot.name = name;
+        scene.add(pivot);
+    }
+}
+
+function initializePivotPositions()
+{
+    for(var i = 0; i < frontPivotPositions.length; i++)
+    {
+        var arr = frontPivotPositions[i];
+        var rightArr = [arr[2], arr[1], arr[0]];
+        var leftArr = [arr[2] * -1, arr[1], arr[0]];
+        var topArr = [arr[1], arr[2] * -1, arr[0]];
+        var bottomArr = [arr[1], arr[2], arr[0]];
+        var backArr = [arr[0], arr[1], arr[2] * -1];
+
+
+        righPivotPositions[i] = rightArr; 
+        leftPivotPositions[i] = leftArr;
+        topPivotPositions[i] = topArr;
+        bottomPivotPositions[i] = bottomArr;
+        backPivotPositions[i] = backArr;
+
+    }
+}
+
+function initializeMaps()
+{
+    for(var i = 0; i < sideNames.length; i++)
+    {
+        sideNameToPositions.set(sideNames[i], pivotPositions[i]);
+        sideNameToPivot.set(sideNames[i], pivots[i]);
+        
+    }
+}
+
+export function changeParent(originalParent, newParent, sideName)
+{
+    var positions = sideNameToPositions.get(sideName);
+    for(var i = 0; i < positions.length; i++)
+    {
+        var child = getChildFromUserData(originalParent, positions[i]);
+        
+        if(child != null)
         {
-            var child = children[i];
-            if(rows.includes(child.userData.ROW)
-                && child.userData.COL == col)
+            newParent.attach(child);
+        }
+    }
+}
+
+function getChildFromUserData(obj, posArray)
+{
+
+    for(var i = 0; i < obj.children.length; i++)
+    {
+        var child = obj.children[i];
+        var childX = child.userData.X;
+        var childY = child.userData.Y;
+        var childZ = child.userData.Z;
+        if(childX == posArray[0]
+            && childY == posArray[1]
+            && childZ == posArray[2])
             {
-                leftPivot.attach(children[i]);
+                return child;
             }
-        }    
     }
+    return null;
+}
+
+
+
+export function deactivateSide(cube, pivot)
+{
+    updateFaceNames(pivot);
+    updateTags(pivot);
+    changeParent(pivot, cube, pivot.name);
+}
+
+
+
+
+export function updateTags(pivot)
+{
+
+    console.log("new tags");
+    for(var i = 0; i < pivot.children.length; i ++)
+    {
+        var child = pivot.children[i];
     
-    scene.add(leftPivot);
 
-    topPivot = createPivot(scene, "TopParent");
-    scene.add(topPivot);
+        var worldPos =new THREE.Vector3();
 
-    bottomPivot = createPivot(scene, "BottomParent");
-    scene.add(bottomPivot);
+        child.getWorldPosition(worldPos);
 
-    frontPivot = createPivot(scene, "FrontParent");
-    scene.add(frontPivot);
+        worldPos.x = Math.round(worldPos.x / 6) * 6;
+        worldPos.y = Math.round(worldPos.y / 6) * 6;
+        worldPos.z = Math.round(worldPos.z / 6) * 6;
 
-    backPivot = createPivot(scene, "BackParent");
-    scene.add(backPivot);
+        child.userData = {X : worldPos.x,
+            Y : worldPos.y,
+            Z : worldPos.z};
+
+        console.log(worldPos);
+
+
+    }
+}
+
+function updateFaceNames(pivot)
+{
 
 }
 
-function createPivot(scene, parentName)
+export function getPivotFromMouseMove(pressedObj, mouseMoveAxis)
 {
-    var pivot = new THREE.Group();
-    
-    var parent = scene.getObjectByName(parentName);
-
-    pivot.position.set(parent.position.x, parent.position.y, parent.position.z);
-    pivot.rotation.set(parent.rotation.x, parent.rotation.y, parent.rotation.z);
-
-    var childrenCopy = getChildrenCopy(parent);
-    for(var i = 0; i < childrenCopy.length; i++)
+    if(mouseMoveAxis.x == 1)
     {
-        pivot.add(childrenCopy[i]);
+        if(pressedObj.name == "FrontFace" || pressedObj.name == "RightFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.Y, [topPivot, bottomPivot]);
+        }
+        else if(pressedObj.name == "TopFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.Z, [backPivot, frontPivot]);
+        }
+    }
+    else if(mouseMoveAxis.y == 1)
+    {
+        if(pressedObj.name == "FrontFace" || pressedObj.name == "TopFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.X, [leftPivot, rightPivot]);
+        }
+        else if(pressedObj.name == "RightFace")
+        {
+            return getPivotFromFace(pressedObj.parent.userData.Z, [backPivot, frontPivot]);
+        }
     }
 
-    return pivot;
-
+    return null;
 }
 
-function getChildrenCopy(parent)
+function getPivotFromFace(userDataVal, pivotArray)
 {
-    var children = [];
-
-    for(var i = 0; i < parent.children.length; i++)
+    if(userDataVal == 6)
     {
-        children.push(parent.children[i]);
+        return pivotArray[0];
     }
-    return children;
+    else if(userDataVal == -6)
+    {
+        return pivotArray[1];
+    }
+    return null;
+}
 
+export function getRotationAxis(pivotName)
+{
+    return pivotNameToRotationAxis.get(pivotName);
 }

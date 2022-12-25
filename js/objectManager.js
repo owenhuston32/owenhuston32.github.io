@@ -6,9 +6,7 @@ var cubeObj;
 export function createCube(scene)
 {
     cubeObj = cube.createCube(scene);
-
     pivotManager.createPivots(scene);
-
 }
 
 export function getCube()
@@ -16,9 +14,9 @@ export function getCube()
     return cubeObj;
 }
 
-export function rotateObject(obj, draggedVector, rightPivot)
+export function rotateObject(pressedObj, draggedVector)
 {
-    rotationManager.rotateObject(obj, draggedVector, rightPivot);
+    rotationManager.rotateObject(pressedObj, draggedVector);
 }
 
 export function stopRotating()

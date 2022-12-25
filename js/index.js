@@ -5,7 +5,7 @@ import * as inputManager from './inputManager.js';
 import * as raycaster from './raycastManager.js';
 import * as objectManager from './objectManager.js';
 
-var mouse, pressedObject, cameraIndex;
+var pressedObject;
 
 init();
 
@@ -47,7 +47,6 @@ function startInputListener()
 
     document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
 
-
     document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
     document.onmouseup = function(){onMouseUp()};
@@ -57,7 +56,7 @@ function startInputListener()
 function onMouseDown(event, fullScreenCanvas)
 {
 
-    mouse = inputManager.onMouseDown(event, fullScreenCanvas);
+    var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
     var cameraIndex = cameraManager.getCameraIndexFromMouse(mouse);
 
@@ -73,7 +72,7 @@ function onMouseMove(event, fullScreenCanvas)
 
     if(pressedObject)
     {
-        objectManager.rotateObject(pressedObject, draggedVector, cameraIndex);
+        objectManager.rotateObject(pressedObject, draggedVector);
     }
 
 }

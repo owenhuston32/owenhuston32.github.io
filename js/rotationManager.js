@@ -1,34 +1,42 @@
 import * as pivotManager from './pivotManager.js';
+import * as objectManager from './objectManager.js';
 
-
-var rotationObj, rotationAxis, rotationAxisChar;
+var rotationObj, currentRotation, rotationAxis;
 var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
-var moveHorizontal = false, moveVertical = false;
+var shouldMove = false;
+var mouseMoveAxis = new THREE.Vector2();
 
-export function rotateObject(obj, draggedVector)
+export function rotateObject(pressedObj, draggedVector)
 {
     // if we arent moving in a direction yet
-    if(!moveHorizontal && !moveVertical)
+    if(!shouldMove)
     {
-        if(Math.abs(draggedVector.x) > 0.05)
+        var xDist = Math.abs(draggedVector.x);
+        var yDist = Math.abs(draggedVector.y);
+        if(xDist > 0.05 || yDist > 0.05)
         {
-            rotationObj = obj.parent;
-            moveHorizontal = true;
-        }
-        else if(Math.abs(draggedVector.y) > 0.05)
-        {
-            rotationObj = pivotManager.getLeftPivot();
-            moveVertical = true;
+            if(xDist > yDist)
+            {
+                mouseMoveAxis = new THREE.Vector2(1,0);
+            }
+            else
+            {
+                mouseMoveAxis = new THREE.Vector2(0,1);
+            }
+            rotationObj = pivotManager.getPivotFromMouseMove(pressedObj, mouseMoveAxis);
+            
+            if(rotationObj != null)
+            {
+                rotationAxis = pivotManager.getRotationAxis(rotationObj.name);
+                pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
+                shouldMove = true;
+            }
         }
     }
-    else if(moveVertical)
+    else if(shouldMove)
     {
-        rotateVertical(rotationObj, draggedVector);
-    }
-    else
-    {
-        rotateHorizonal(rotationObj, draggedVector);
+        setRotation(rotationObj, draggedVector);
     }
 
     prevDrag.x = draggedVector.x;
@@ -38,62 +46,47 @@ export function rotateObject(obj, draggedVector)
 export function stopRotating()
 {
 
-    // rads to degrees = rad * 180 / PI
-    var degrees = rotationAxis * 180 / Math.PI;
-
-    // round to nearest 90 degree
-    degrees = Math.round(degrees / 90) * 90;
-
-    if(rotationAxisChar === 'x')
+    if(shouldMove)
     {
-        rotationObj.rotation.x = degrees * Math.PI / 180;
-    }
-    else if(rotationAxisChar === 'y')
-    {
-        rotationObj.rotation.y = degrees * Math.PI / 180;
-    }
-    else if(rotationAxisChar === 'z')
-    {
-        rotationObj.rotation.z = degrees * Math.PI / 180;
-    }
+        var rotationDistance = 
+            rotationAxis.x * currentRotation.x
+            + rotationAxis.y * currentRotation.y
+            + rotationAxis.z * currentRotation.z;
+    
 
-    moveHorizontal = false;
-    moveVertical = false;
+        // rads to degrees = rad * 180 / PI
+        var degrees = rotationDistance * 180 / Math.PI;
+        // round to nearest 90 degree
+        degrees = Math.round(degrees / 90) * 90;
+
+        var radians = degrees * Math.PI / 180;
+
+        rotationObj.rotation.set(rotationAxis.x * radians,
+            rotationAxis.y * radians,
+            rotationAxis.z * radians);
+
+        rotationObj.updateMatrixWorld(true);
+
+        pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
+    
+        shouldMove = false;
+    }
 
 }
 
-function rotateVertical(obj, draggedVector)
+function setRotation(obj, draggedVector)
 {
-    //if(obj.name === "FrontParent")
-    //{
-        rotateFrontVertical(obj, draggedVector);
-    //}
+    currentRotation = obj.rotation;
 
-}
-function rotateHorizonal(obj, draggedVector)
-{
-    if(obj.name === "FrontParent")
-    {
-        rotateFrontHorizontal(obj, draggedVector);
-    }
-}
+    var draggedMouseDistance = 
+        ((draggedVector.x - prevDrag.x) * mouseMoveAxis.x 
+        + (draggedVector.y - prevDrag.y) * mouseMoveAxis.y);
 
-function rotateFrontVertical(obj, draggedVector)
-{
-    rotationAxis = obj.rotation.x;
-    rotationAxisChar = 'x';
+    
+    obj.rotation.set(
+        currentRotation.x + (draggedMouseDistance * rotationSpeed * rotationAxis.x),
+        currentRotation.y + (draggedMouseDistance * rotationSpeed * rotationAxis.y),
+        currentRotation.z + (draggedMouseDistance * rotationSpeed * rotationAxis.z)
+    );
 
-    var distance = draggedVector.y - prevDrag.y;
-
-    obj.rotation.x += distance * rotationSpeed;
-}
-
-function rotateFrontHorizontal(obj, draggedVector)
-{
-    rotationAxis = obj.rotation.z;
-    rotationAxisChar = 'z';
-
-    var distance = draggedVector.y - prevDrag.y;
-
-    obj.rotation.z += distance * rotationSpeed;
 }

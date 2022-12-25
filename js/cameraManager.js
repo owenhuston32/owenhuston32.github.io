@@ -9,11 +9,10 @@ export function createCameras(canvasArray)
         if(i==0)
         {
             //top
-               subCamera.position.y = 20;
+               subCamera.position.y = 200;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
-               subCamera.rotation.z = THREE.Math.degToRad(180);   
-               subCamera.position.z = 15;
-               subCamera.position.x = 10;
+               //subCamera.rotation.z = THREE.Math.degToRad(180);   
+               subCamera.position.z = -10;
             }
            else if(i==1)
                {
@@ -31,14 +30,12 @@ export function createCameras(canvasArray)
                //front
                subCamera.position.z = -20;
                subCamera.lookAt (new THREE.Vector3(0,0,0));
-               subCamera.position.x = 10;
                }
            else
                {
                //right
               subCamera.position.x = -20;
               subCamera.lookAt (new THREE.Vector3(0,0,0));
-              subCamera.position.z = 10;
                }
 
             subCamera.name  = "camera: " + i;

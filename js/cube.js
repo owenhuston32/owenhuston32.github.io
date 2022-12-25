@@ -1,62 +1,115 @@
 var cube = new THREE.Object3D();
 
+var cubeSize = 5;
+
 const materials = [
     new THREE.MeshPhongMaterial({color: 'white'})
-    ,new THREE.MeshPhongMaterial({color: 'yellow'})
-    ,new THREE.MeshPhongMaterial({color: 'green'})
-    ,new THREE.MeshPhongMaterial({color: 'blue'})
     ,new THREE.MeshPhongMaterial({color: 'red'})
-    ,new THREE.MeshPhongMaterial({color: 0xFF8C00})
+    ,new THREE.MeshPhongMaterial({color: 'green'})
+    ,new THREE.MeshPhongMaterial({color: 'orange'})
+    ,new THREE.MeshPhongMaterial({color: 'yellow'})
+    ,new THREE.MeshPhongMaterial({color: 'blue'})
         ,new THREE.MeshPhongMaterial({color: 'deeppink'})
 ];
 
+const frontSticker = new THREE.BoxGeometry(cubeSize, cubeSize, .1);
+const frontStickerMesh = new THREE.Mesh(frontSticker, materials[0]);
+
+const sideSticker = new THREE.BoxGeometry(.1, cubeSize, cubeSize);
+const sideStickerMesh = new THREE.Mesh(sideSticker, materials[0]);
+
+const topSticker = new THREE.BoxGeometry(cubeSize, .1, cubeSize);
+const topStickerMesh = new THREE.Mesh(topSticker, materials[0]);
+
+const distanceBetweenPieces = 6;
+
 export function createCube(scene)
 {
-    var front = createSide(materials[0], new THREE.Vector3(), new THREE.Vector3(), "FrontParent");
-    cube.add(front);
-    
-    var right = createSide(materials[1], new THREE.Vector3(0, THREE.MathUtils.degToRad(90), 0), new THREE.Vector3(-9, 0, 9), "RightParent");
-    cube.add(right);
-    
-    var back = createSide(materials[2], new THREE.Vector3(0, THREE.MathUtils.degToRad(180), THREE.MathUtils.degToRad(180)), new THREE.Vector3(0, 0, 18),  "BackParent");
-    cube.add(back);
-
-    var left = createSide(materials[3], new THREE.Vector3(0, THREE.MathUtils.degToRad(270), 0), new THREE.Vector3(9, 0, 9),"LeftParent");
-    cube.add(left);
-
-    var top = createSide(materials[4], new THREE.Vector3(THREE.MathUtils.degToRad(90), 0, 0), new THREE.Vector3(0, 9, 9), "TopParent");
-    cube.add(top);
-
-    var bottom = createSide(materials[5], new THREE.Vector3(THREE.MathUtils.degToRad(-90), 0, 0), new THREE.Vector3(0, -9, 9), "BottomParent");
-    cube.add(bottom);
-
+    var box = createBox();
+    cube = createPieces(box);
+    cube.name = "Cube";
     scene.add(cube);
+
+    console.log(scene);
 
     return cube;
 }
 
 
-function createSide(material, rotation, position, name)
+function createPieces(box)
 {
-    var side = new THREE.Object3D();
-    const box = new THREE.BoxGeometry(5, 5, 1); // width, height, depth
-    var initialY = -6;
-    var initialX = 6;
-
-    for(var i = 0; i < 3; i++)
+    var cube = new THREE.Object3D();
+    for(var x = -1; x < 2; x++)
     {
-        for(var j = 0; j < 3; j++)
+        for(var y = -1; y < 2; y++)
         {
-            var mesh = new THREE.Mesh(box, material);
-            mesh.position.set(initialX - j * 6, initialY + i * 6, 0);
-            mesh.name = i + "," + j;
-            mesh.userData = {ROW: i, COL: j};
-            side.add(mesh);
+            for(var z = -1; z < 2; z++)
+            {
+                var boxClone = box.clone();
+
+                var xPos = x * distanceBetweenPieces;
+                var yPos = y * distanceBetweenPieces;
+                var zPos = z * distanceBetweenPieces;
+                boxClone.position.set(xPos, yPos , zPos );
+                boxClone.userData = {X: xPos, Y: yPos, Z: zPos};
+                cube.add(boxClone);
+                    
+            }
         }
     }
-    side.rotation.set(rotation.x, rotation.y, rotation.z);
-    side.position.set(position.x, position.y, position.z);
-    side.name = name;
 
-    return side;
+
+    return cube;
 }
+
+function createBox()
+{
+    var obj = new THREE.Object3D();
+
+    addStickers(obj);
+
+    return obj;
+}
+
+function addStickers(obj)
+{
+
+    var cubeSize = 5;
+    //front sticker
+    addSticker(obj, frontStickerMesh, materials[0], 
+        new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z - cubeSize / 2 + .01), "FrontFace");
+
+    //top sticker
+    addSticker(obj, topStickerMesh, materials[1], 
+        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y + cubeSize / 2 + .01, topStickerMesh.position.z), "TopFace");
+           
+    //back sticker
+    addSticker(obj, frontStickerMesh, materials[2], 
+        new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z + cubeSize / 2 + .01), "BackFace");
+    
+    //bottom sticker
+    addSticker(obj, topStickerMesh, materials[3], 
+        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y - cubeSize / 2 + .01, topStickerMesh.position.z), "BottomFace");
+
+    //left sticker
+    addSticker(obj, sideStickerMesh, materials[4], 
+        new THREE.Vector3(sideStickerMesh.position.x + cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "LeftFace");
+                  
+    //right sticker
+    addSticker(obj, sideStickerMesh, materials[5], 
+        new THREE.Vector3(sideStickerMesh.position.x - cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "RightFace");
+    
+    
+}
+
+function addSticker(obj, stickerMesh, material, newPosition, name)
+{
+    var clone = stickerMesh.clone();
+    clone.material = material;
+    clone.position.set(newPosition.x, newPosition.y, newPosition.z);
+
+    clone.name = name;
+    obj.add(clone);
+}
+
+
