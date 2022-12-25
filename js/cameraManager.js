@@ -22,7 +22,8 @@ export function createCameras(canvasArray)
                 subCamera.position.z = -15;
                 subCamera.position.y = 10;
                 subCamera.lookAt (new THREE.Vector3(0,0,0));
-                subCamera.position.y = 27;
+                subCamera.position.y = 20;
+                subCamera.position.z = -10;
 
                }
            else if(i==2)
@@ -35,7 +36,7 @@ export function createCameras(canvasArray)
            else
                {
                //right
-              subCamera.position.x = -5;
+              subCamera.position.x = -20;
               subCamera.lookAt (new THREE.Vector3(0,0,0));
               subCamera.position.z = 10;
                }

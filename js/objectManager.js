@@ -6,14 +6,8 @@ var cubeObj;
 export function createCube(scene)
 {
     cubeObj = cube.createCube(scene);
-    var rightPivot = pivotManager.createRightPivot(cubeObj);
-    
-    console.log(cubeObj);
 
-    scene.add(rightPivot);
-    
-    rotationManager.initializePivots(rightPivot);
-
+    pivotManager.createPivots(scene);
 
 }
 

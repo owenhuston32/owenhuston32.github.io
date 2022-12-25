@@ -1,14 +1,10 @@
+import * as pivotManager from './pivotManager.js';
+
+
 var rotationObj, rotationAxis, rotationAxisChar;
 var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
 var moveHorizontal = false, moveVertical = false;
-var rightPivot;
-
-
-export function initializePivots(newRightPivot)
-{
-    rightPivot = newRightPivot;
-}
 
 export function rotateObject(obj, draggedVector)
 {
@@ -22,7 +18,7 @@ export function rotateObject(obj, draggedVector)
         }
         else if(Math.abs(draggedVector.y) > 0.05)
         {
-            rotationObj = rightPivot;
+            rotationObj = pivotManager.getLeftPivot();
             moveVertical = true;
         }
     }
@@ -88,8 +84,6 @@ function rotateFrontVertical(obj, draggedVector)
     rotationAxisChar = 'x';
 
     var distance = draggedVector.y - prevDrag.y;
-    console.log("drag: " + draggedVector.y 
-    + "prev" + prevDrag.y);
 
     obj.rotation.x += distance * rotationSpeed;
 }
@@ -98,12 +92,8 @@ function rotateFrontHorizontal(obj, draggedVector)
 {
     rotationAxis = obj.rotation.z;
     rotationAxisChar = 'z';
-    if(draggedVector.x - prevDrag.x > 0)
-    {
-        obj.rotation.z -= rotationSpeed;
-    }
-    else
-    {
-        obj.rotation.z += rotationSpeed;
-    }
+
+    var distance = draggedVector.y - prevDrag.y;
+
+    obj.rotation.z += distance * rotationSpeed;
 }
