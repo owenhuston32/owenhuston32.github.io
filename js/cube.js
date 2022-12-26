@@ -77,36 +77,44 @@ function addStickers(obj)
     var cubeSize = 5;
     //front sticker
     addSticker(obj, frontStickerMesh, materials[0], 
-        new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z - cubeSize / 2 + .01), "FrontFace");
+        new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z - cubeSize / 2 + .01), "FrontFace"
+        ,new THREE.Vector3(0,0,-1));
 
     //top sticker
     addSticker(obj, topStickerMesh, materials[1], 
-        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y + cubeSize / 2 + .01, topStickerMesh.position.z), "TopFace");
+        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y + cubeSize / 2 + .01, topStickerMesh.position.z), "TopFace"
+        ,new THREE.Vector3(0,1,0));
            
     //back sticker
     addSticker(obj, frontStickerMesh, materials[2], 
-        new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z + cubeSize / 2 + .01), "BackFace");
+        new THREE.Vector3(frontStickerMesh.position.x, frontStickerMesh.position.y, frontStickerMesh.position.z + cubeSize / 2 + .01), "BackFace"
+        ,new THREE.Vector3(0,0,1));
     
     //bottom sticker
     addSticker(obj, topStickerMesh, materials[3], 
-        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y - cubeSize / 2 + .01, topStickerMesh.position.z), "BottomFace");
+        new THREE.Vector3(topStickerMesh.position.x, topStickerMesh.position.y - cubeSize / 2 + .01, topStickerMesh.position.z), "BottomFace"
+        ,new THREE.Vector3(0,-1,0));
 
     //left sticker
     addSticker(obj, sideStickerMesh, materials[4], 
-        new THREE.Vector3(sideStickerMesh.position.x + cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "LeftFace");
+        new THREE.Vector3(sideStickerMesh.position.x + cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "LeftFace"
+        ,new THREE.Vector3(-1,0,0));
                   
     //right sticker
     addSticker(obj, sideStickerMesh, materials[5], 
-        new THREE.Vector3(sideStickerMesh.position.x - cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "RightFace");
+        new THREE.Vector3(sideStickerMesh.position.x - cubeSize / 2 + .01, sideStickerMesh.position.y, sideStickerMesh.position.z), "RightFace"
+        ,new THREE.Vector3(1,0,0));
     
     
 }
 
-function addSticker(obj, stickerMesh, material, newPosition, name)
+function addSticker(obj, stickerMesh, material, newPosition, name, vectorTag)
 {
     var clone = stickerMesh.clone();
     clone.material = material;
     clone.position.set(newPosition.x, newPosition.y, newPosition.z);
+
+    clone.userData = {X: vectorTag.x, Y: vectorTag.y, Z: vectorTag.z};
 
     clone.name = name;
     obj.add(clone);
