@@ -3,7 +3,8 @@ html, body {
       height: 100%;
       margin: 0px;
       border: 0;
-      display: block;  /* No floating content on sides */
+      display: block;
+      overflow: hidden;
 }
 
 canvas { 

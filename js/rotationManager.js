@@ -6,12 +6,14 @@ var rotationSpeed = 6;
 var prevDrag = new THREE.Vector2();
 var shouldMove = false;
 var mouseMoveAxis = new THREE.Vector2();
+var currPressedObj;
 
 export function rotateObject(pressedObj, draggedVector)
 {
     // if we arent moving in a direction yet
     if(!shouldMove)
     {
+        currPressedObj = pressedObj;
         var xDist = Math.abs(draggedVector.x);
         var yDist = Math.abs(draggedVector.y);
         if(xDist > 0.05 || yDist > 0.05)
@@ -28,7 +30,7 @@ export function rotateObject(pressedObj, draggedVector)
             
             if(rotationObj != null)
             {
-                rotationAxis = pivotManager.getRotationAxis(rotationObj.name);
+                rotationAxis = pivotManager.getRotationAxis(pressedObj, rotationObj.name);
                 pivotManager.changeParent(objectManager.getCube(), rotationObj, rotationObj.name);
                 shouldMove = true;
             }
@@ -67,7 +69,7 @@ export function stopRotating()
 
         rotationObj.updateMatrixWorld(true);
 
-        pivotManager.deactivateSide(objectManager.getCube(), rotationObj);
+        pivotManager.deactivateSide(objectManager.getCube(), rotationObj, radians, currPressedObj);
     
         shouldMove = false;
     }
