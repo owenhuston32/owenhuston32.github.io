@@ -46,15 +46,19 @@ function startInputListener()
 {
 
     document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
-
+    document.getElementById("overlay").onpointerdown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
+    
     document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
+    document.getElementById("overlay").onpointermove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
-    document.onmouseup = function(){onMouseUp()};
+    document.onmouseup = function(event){onMouseUp(event)};
+    document.onpointerup = function(event){onMouseUp(event)};
 
 }
 
 function onMouseDown(event, fullScreenCanvas)
 {
+    document.getElementById("overlay").setPointerCapture(event.pointerId);
 
     var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
@@ -70,14 +74,18 @@ function onMouseMove(event, fullScreenCanvas)
 {
     var draggedVector = inputManager.onMouseMove(event, fullScreenCanvas);
 
+    console.log("moving");
+
     if(pressedObject)
     {
         objectManager.rotateObject(pressedObject, draggedVector);
     }
 
 }
-function onMouseUp()
+function onMouseUp(event)
 {
+    console.log("mouse up");
+    
     objectManager.stopRotating();
     pressedObject = null;
     inputManager.onMouseUp();
