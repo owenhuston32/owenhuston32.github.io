@@ -5,8 +5,8 @@ import * as inputManager from './inputManager.js';
 import * as raycaster from './raycastManager.js';
 import * as objectManager from './objectManager.js';
 
-var pressedObject;
-
+var pressedObject, mouseDown = false;
+const ongoingTouches = [];
 init();
 
 function init()
@@ -26,11 +26,13 @@ function init()
     animate();
 
 
-    startInputListener();
+    //startInputListener();
 
     window.onresize = function() {
         onWindowResize();
     };
+
+    document.addEventListener("DOMContentLoaded", startInputListener);
 
     onWindowResize();
     
@@ -44,35 +46,67 @@ function animate()
 
 function startInputListener()
 {
+    console.log("start input listener");
 
-    document.body.onpointerdown = (event) => {
-        document.body.setPointerCapture(event.pointerId);
-        console.log('pointerdown');
-    };
+    const el = document.getElementById("overlay");
 
-    
+    el.addEventListener("touchstart", function(ev) {
+        ev.preventDefault();
+        onMouseDown(ev, screenManager.getFullScreenCanvas());
+      }, {
+        passive: false
+      });
 
-    document.body.onpointerup = (event) => {
-        console.log('pointerup');
-    };
+
+      el.addEventListener("touchmove", function(ev) {
+        ev.preventDefault();
+        onMouseMove(ev, screenManager.getFullScreenCanvas());
+      }, {
+        passive: false
+      });
+      
+      el.addEventListener("touchend", function(ev) {
+        ev.preventDefault();
+        onMouseUp(ev);
+      }, {
+        passive: false
+      });
+
+    //window.ontouchstart = function(event) {
+    //    console.log("touch start");
+    //};
+    //window.ontouchmove = function(event) {
+    //    console.log("touch move");
+    //};
+    //window.ontouchend = function(event) {
+    //    event.preventDefault();
+    //    console.log("touch end");
+    //};
+
+
 
     //document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
-    //document.body.onpointerenter = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
     
+    //window.ontouchstart = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
+
     //document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
-    //document.getElementById("overlay").onpointermove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
+    //window.ontouchmove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
 
-    //document.getElementById("overlay").onmouseup = function(event){onMouseUp(event)};
-    //document.body.onpointerleave = function(event){onMouseUp(event)};
 
+    //document.onmouseup = function(event){onMouseUp(event)};
+    //window.ontouchend = function(event){onMouseUp(event)};
 }
 
 function onMouseDown(event, fullScreenCanvas)
 {
-    document.body.setPointerCapture(event.pointerId);
+    //document.getElementById("overlay").setPointerCapture(event.pointerId);
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    mouseDown = true;
 
     console.log("mouse down");
-    console.log(event.pointerId);
 
     var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
@@ -86,9 +120,13 @@ function onMouseDown(event, fullScreenCanvas)
 
 function onMouseMove(event, fullScreenCanvas)
 {
-    //document.getElementById("overlay").setPointerCapture(event.pointerId);
-    console.log("moving");
+    event.preventDefault();
+    if(!mouseDown)
+        return;
+
     var draggedVector = inputManager.onMouseMove(event, fullScreenCanvas);
+
+    console.log("moving");
 
     if(pressedObject)
     {
@@ -98,8 +136,11 @@ function onMouseMove(event, fullScreenCanvas)
 }
 function onMouseUp(event)
 {
+    event.preventDefault();
+    console.log(event.touch)
+
+    mouseDown = false;
     console.log("mouse up");
-    console.log(event.pointerId);
     
     objectManager.stopRotating();
     pressedObject = null;
@@ -111,3 +152,20 @@ function onWindowResize()
     screenManager.onWindowResize();
     cameraManager.onWindowResize(screenManager.getCanvasArray());
 }
+
+function copyTouch({ identifier, pageX, pageY }) {
+    return { identifier, pageX, pageY };
+  }
+  
+
+function ongoingTouchIndexById(idToFind) {
+    for (let i = 0; i < ongoingTouches.length; i++) {
+      const id = ongoingTouches[i].identifier;
+  
+      if (id === idToFind) {
+        return i;
+      }
+    }
+    return -1;    // not found
+  }
+  
