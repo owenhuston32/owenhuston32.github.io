@@ -53,13 +53,19 @@ export function screenToCameraSpace(mouse, cameraIndex)
 
 export function onMouseDown(event, canvas)
 {
+
+    console.log("event");
+    console.log(event);
+
     mouseUp = false;
-    //event.preventDefault();
 
     mouse = getMousePosition(event, canvas);
 
     clickPosition.x = mouse.x;
     clickPosition.y = mouse.y;
+
+    console.log("new mouse");
+    console.log(mouse);
 
     return mouse;
 }
