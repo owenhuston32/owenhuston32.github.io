@@ -42,16 +42,16 @@ function animate()
 
 function startInputListener()
 {
-
     const el = document.getElementById("overlay");
 
-    var pos = new THREE.Vector2();
+    var mousePos = new THREE.Vector2();
+
 
     el.addEventListener("touchstart", function(ev) {
         ev.preventDefault();
-        pos.x = ev.touches[0].clientX;
-        pos.y = ev.touches[0].clientY;
-        onMouseDown(pos, screenManager.getFullScreenCanvas());
+        mousePos.x = ev.touches[0].clientX;
+        mousePos.y = ev.touches[0].clientY;
+        onMouseDown(mousePos, screenManager.getFullScreenCanvas(), false);
       }, {
         passive: false
       });
@@ -59,9 +59,9 @@ function startInputListener()
 
       el.addEventListener("touchmove", function(ev) {
         ev.preventDefault();
-        pos.x = ev.touches[0].clientX;
-        pos.y = ev.touches[0].clientY;
-        onMouseMove(pos, screenManager.getFullScreenCanvas());
+        mousePos.x = ev.touches[0].clientX;
+        mousePos.y = ev.touches[0].clientY;
+        onMouseMove(mousePos, screenManager.getFullScreenCanvas(), false);
       }, {
         passive: false
       });
@@ -73,38 +73,16 @@ function startInputListener()
         passive: false
       });
 
-    //window.ontouchstart = function(event) {
-    //    console.log("touch start");
-    //};
-    //window.ontouchmove = function(event) {
-    //    console.log("touch move");
-    //};
-    //window.ontouchend = function(event) {
-    //    event.preventDefault();
-    //    console.log("touch end");
-    //};
-
-
-
-    //document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
-    
-    //window.ontouchstart = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
-
-    //document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
-    //window.ontouchmove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
-
-
-    //document.onmouseup = function(event){onMouseUp(event)};
-    //window.ontouchend = function(event){onMouseUp(event)};
+    el.onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas(), true)};
+    el.onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas(), true)};
+    el.onmouseup = function(event){onMouseUp(event)};
 }
 
-function onMouseDown(event, fullScreenCanvas)
+function onMouseDown(event, fullScreenCanvas, isMouse)
 {
-
     console.log("mouse down");
-    console.log(event);
 
-    var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
+    var mouse = inputManager.onMouseDown(event, fullScreenCanvas, isMouse);
 
     var cameraIndex = cameraManager.getCameraIndexFromMouse(mouse);
 
@@ -126,9 +104,10 @@ function onMouseMove(event, fullScreenCanvas)
     }
 
 }
-function onMouseUp(event)
+function onMouseUp()
 {
     console.log("mouse up");
+    
     objectManager.stopRotating();
     pressedObject = null;
     inputManager.onMouseUp();
@@ -139,4 +118,3 @@ function onWindowResize()
     screenManager.onWindowResize();
     cameraManager.onWindowResize(screenManager.getCanvasArray());
 }
-  
