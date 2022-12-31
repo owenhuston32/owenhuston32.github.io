@@ -45,20 +45,34 @@ function animate()
 function startInputListener()
 {
 
-    document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
-    document.getElementById("overlay").onpointerdown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
-    
-    document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
-    document.getElementById("overlay").onpointermove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
+    document.body.onpointerdown = (event) => {
+        document.body.setPointerCapture(event.pointerId);
+        console.log('pointerdown');
+    };
 
-    document.onmouseup = function(event){onMouseUp(event)};
-    document.onpointerup = function(event){onMouseUp(event)};
+    
+
+    document.body.onpointerup = (event) => {
+        console.log('pointerup');
+    };
+
+    //document.getElementById("overlay").onmousedown = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
+    //document.body.onpointerenter = function(event){onMouseDown(event, screenManager.getFullScreenCanvas())};
+    
+    //document.getElementById("overlay").onmousemove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
+    //document.getElementById("overlay").onpointermove = function(event){onMouseMove(event, screenManager.getFullScreenCanvas())};
+
+    //document.getElementById("overlay").onmouseup = function(event){onMouseUp(event)};
+    //document.body.onpointerleave = function(event){onMouseUp(event)};
 
 }
 
 function onMouseDown(event, fullScreenCanvas)
 {
-    document.getElementById("overlay").setPointerCapture(event.pointerId);
+    document.body.setPointerCapture(event.pointerId);
+
+    console.log("mouse down");
+    console.log(event.pointerId);
 
     var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
@@ -72,9 +86,9 @@ function onMouseDown(event, fullScreenCanvas)
 
 function onMouseMove(event, fullScreenCanvas)
 {
-    var draggedVector = inputManager.onMouseMove(event, fullScreenCanvas);
-
+    //document.getElementById("overlay").setPointerCapture(event.pointerId);
     console.log("moving");
+    var draggedVector = inputManager.onMouseMove(event, fullScreenCanvas);
 
     if(pressedObject)
     {
@@ -85,6 +99,7 @@ function onMouseMove(event, fullScreenCanvas)
 function onMouseUp(event)
 {
     console.log("mouse up");
+    console.log(event.pointerId);
     
     objectManager.stopRotating();
     pressedObject = null;
