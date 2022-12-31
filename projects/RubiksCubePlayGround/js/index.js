@@ -5,8 +5,7 @@ import * as inputManager from './inputManager.js';
 import * as raycaster from './raycastManager.js';
 import * as objectManager from './objectManager.js';
 
-var pressedObject, mouseDown = false;
-const ongoingTouches = [];
+var pressedObject;
 init();
 
 function init()
@@ -24,9 +23,6 @@ function init()
     sceneManager.createLighting();
 
     animate();
-
-
-    //startInputListener();
 
     window.onresize = function() {
         onWindowResize();
@@ -46,13 +42,16 @@ function animate()
 
 function startInputListener()
 {
-    console.log("start input listener");
 
     const el = document.getElementById("overlay");
 
+    var pos = new THREE.Vector2();
+
     el.addEventListener("touchstart", function(ev) {
         ev.preventDefault();
-        onMouseDown(ev, screenManager.getFullScreenCanvas());
+        pos.x = ev.touches[0].clientX;
+        pos.y = ev.touches[0].clientY;
+        onMouseDown(pos, screenManager.getFullScreenCanvas());
       }, {
         passive: false
       });
@@ -60,7 +59,9 @@ function startInputListener()
 
       el.addEventListener("touchmove", function(ev) {
         ev.preventDefault();
-        onMouseMove(ev, screenManager.getFullScreenCanvas());
+        pos.x = ev.touches[0].clientX;
+        pos.y = ev.touches[0].clientY;
+        onMouseMove(pos, screenManager.getFullScreenCanvas());
       }, {
         passive: false
       });
@@ -99,14 +100,9 @@ function startInputListener()
 
 function onMouseDown(event, fullScreenCanvas)
 {
-    //document.getElementById("overlay").setPointerCapture(event.pointerId);
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-
-    mouseDown = true;
 
     console.log("mouse down");
+    console.log(event);
 
     var mouse = inputManager.onMouseDown(event, fullScreenCanvas);
 
@@ -120,10 +116,6 @@ function onMouseDown(event, fullScreenCanvas)
 
 function onMouseMove(event, fullScreenCanvas)
 {
-    event.preventDefault();
-    if(!mouseDown)
-        return;
-
     var draggedVector = inputManager.onMouseMove(event, fullScreenCanvas);
 
     console.log("moving");
@@ -136,12 +128,7 @@ function onMouseMove(event, fullScreenCanvas)
 }
 function onMouseUp(event)
 {
-    event.preventDefault();
-    console.log(event.touch)
-
-    mouseDown = false;
     console.log("mouse up");
-    
     objectManager.stopRotating();
     pressedObject = null;
     inputManager.onMouseUp();
@@ -152,20 +139,4 @@ function onWindowResize()
     screenManager.onWindowResize();
     cameraManager.onWindowResize(screenManager.getCanvasArray());
 }
-
-function copyTouch({ identifier, pageX, pageY }) {
-    return { identifier, pageX, pageY };
-  }
-  
-
-function ongoingTouchIndexById(idToFind) {
-    for (let i = 0; i < ongoingTouches.length; i++) {
-      const id = ongoingTouches[i].identifier;
-  
-      if (id === idToFind) {
-        return i;
-      }
-    }
-    return -1;    // not found
-  }
   
