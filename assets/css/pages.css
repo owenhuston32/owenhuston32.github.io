@@ -1,0 +1,29 @@
+.headerContainer {
+    text-align:center;
+}
+
+.header{
+    font-size: calc(3em + 1vmin);
+    margin: 0px;
+}
+
+.gifContainer{
+    text-align: center;
+}
+
+.gif{
+    height: auto; 
+    width: calc(20em + 1vmin);
+}
+
+.linksContainer{
+    text-align: center;
+}
+
+.linkList{
+    display: inline-block; list-style: none;
+}
+
+.linkItem{
+    float: left; margin-left: calc(1em + 1vmin); margin-right: calc(1em + 1vmin);
+}
