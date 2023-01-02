@@ -12,8 +12,7 @@
 }
 
 .gif{
-    height: auto; 
-    width: calc(40em + 1vmin);
+    width: calc(30em + 1vmin);
 }
 
 .linksContainer{
